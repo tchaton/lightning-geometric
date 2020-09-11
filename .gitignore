@@ -32,3 +32,4 @@ lightning_logs
 /data
 .tox
 .python-version
+.venv/*

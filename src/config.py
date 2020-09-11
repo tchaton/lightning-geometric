@@ -38,5 +38,5 @@ cs.store(name="config", node=Config)
 cs.store(group="project", name="poex", node=ProjectConf)
 cs.store(group="project", name="tagging", node=ProjectConf)
 
-cs.store(group="project/model", name="simple_mlp", node=ObjectConf)
-cs.store(group="project/model", name="simple_mlp", node=ObjectConf)
+#cs.store(group="project/model", name="simple_mlp", node=ObjectConf)
+#cs.store(group="project/model", name="simple_nn", node=ObjectConf)
