@@ -1,3 +1,2 @@
 defaults:
-  - project: ???
-  - model: ${defaults.0.project}/???
+  - project: poex

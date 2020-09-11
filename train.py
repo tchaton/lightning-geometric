@@ -1,5 +1,6 @@
 import os
 import hydra
+from omegaconf import OmegaConf
 
 os.environ["HYDRA_FULL_ERROR"] = "1"
 from omegaconf import DictConfig
