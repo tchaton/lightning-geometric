@@ -1,0 +1,5 @@
+# @package _group_
+_target_: examples.datasets.cora.CoraDataset
+params:
+  val_split: 0.3
+  transforms: NormalizeFeatures
