@@ -1,0 +1,4 @@
+# @package _group_
+_target_: examples.models.gat.GATConvNet
+params:
+  something: 123
