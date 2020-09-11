@@ -1,0 +1,3 @@
+defaults:
+  - project: ???
+  - model: ${defaults.0.project}/???
