@@ -54,6 +54,8 @@ class ZINCDataset(BaseDataset):
                     data.edge_index[1], num_nodes=data.num_nodes, dtype=torch.long
                 )
                 deg += torch.bincount(d, minlength=deg.numel())
+        else:
+            deg = torch.ones(5, dtype=torch.long)
         return deg.numpy().tolist()
 
     @property
@@ -78,9 +80,6 @@ class ZINCDataset(BaseDataset):
     def training_step(self, batch, batch_nb):
         out = self.forward(batch.x, batch.edge_index, batch.edge_attr, batch.batch)
         loss = (out.squeeze() - batch.y).abs().mean()
-        import pdb
-
-        pdb.set_trace()
         result = pl.TrainResult(loss)
         result.log("train_loss", loss, prog_bar=True)
         return result

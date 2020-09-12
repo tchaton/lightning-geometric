@@ -17,8 +17,8 @@ class PNAConvNet(pl.LightningModule):
 
         self.save_hyperparameters()
 
-        self.node_emb = Embedding(21, kwargs["node_dim"])
-        self.edge_emb = Embedding(4, kwargs["edge_dim"])
+        self.node_emb = Embedding(kwargs["node_vocab"], kwargs["node_dim"])
+        self.edge_emb = Embedding(kwargs["edge_vocab"], kwargs["edge_dim"])
 
         aggregators = ["mean", "min", "max", "std"]
         scalers = ["identity", "amplification", "attenuation"]
@@ -57,6 +57,7 @@ class PNAConvNet(pl.LightningModule):
             x = F.relu(batch_norm(conv(x, edge_index, edge_attr)))
 
         x = global_add_pool(x, batch)
+
         return self.mlp(x)
 
     def configure_optimizers(self):

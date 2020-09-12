@@ -7,3 +7,5 @@ params:
   divide_input: False
   aggregators: ['mean', 'min', 'max', 'std']
   scalers: ['identity', 'amplification', 'attenuation']
+  node_vocab: 21
+  edge_vocab: 4
