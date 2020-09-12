@@ -20,18 +20,21 @@ class RedditDataset(BaseDataset):
 
     def __init__(
         self,
+        sizes,
         *args,
         **kwargs,
     ):
         super().__init__(*args, **kwargs)
 
+        self.sizes = sizes
+
     @property
     def num_features(self):
-        return 1433  # TODO Find a better way to infer it
+        return 602  # TODO Find a better way to infer it
 
     @property
     def num_classes(self):
-        return 7
+        return 41
 
     @property
     def hyper_parameters(self):
@@ -48,7 +51,7 @@ class RedditDataset(BaseDataset):
         return NeighborSampler(
             self.data.edge_index,
             node_idx=self.data.train_mask,
-            sizes=[25, 10],
+            sizes=self.sizes,
             batch_size=batch_size,
             shuffle=True,
             num_workers=self._num_workers,
@@ -58,7 +61,7 @@ class RedditDataset(BaseDataset):
         return NeighborSampler(
             self.data.edge_index,
             node_idx=self.data.val_mask,
-            sizes=[25, 10],
+            sizes=self.sizes,
             batch_size=batch_size,
             shuffle=True,
             num_workers=self._num_workers,
@@ -68,7 +71,7 @@ class RedditDataset(BaseDataset):
         return NeighborSampler(
             self.data.edge_index,
             node_idx=self.data.test_mask,
-            sizes=[25, 10],
+            sizes=self.sizes,
             batch_size=batch_size,
             shuffle=True,
             num_workers=self._num_workers,

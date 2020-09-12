@@ -13,3 +13,5 @@ python train.py model=`{{MODEL}}` dataset=`{{DATASET}}`
 | ppi     | gat    |
 | cora    | agnn   |
 | cora    | sage   |
+| reddit  | sage   |
+| reddit  | agnn   |
