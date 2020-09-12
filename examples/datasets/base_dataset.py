@@ -4,17 +4,12 @@ import numpy as np
 from functools import partial
 from hydra.utils import instantiate
 import torch
-from torch.utils.data import DataLoader, random_split
+from torch.utils.data import random_split
+from torch_geometric.data import DataLoader
 from pytorch_lightning import LightningDataModule
 import torch_geometric
 from torch_geometric.datasets import PPI
 import torch_geometric.transforms as T
-
-dataloader = partial(
-    torch.utils.data.DataLoader,
-    collate_fn=torch_geometric.data.batch.Batch.from_data_list,
-    worker_init_fn=np.random.seed,
-)
 
 
 class BaseDataset(LightningDataModule):
@@ -32,6 +27,7 @@ class BaseDataset(LightningDataModule):
         self.dataset_train = None
         self.dataset_val = None
         self.dataset_test = None
+        self.follow_batch = None
 
         self._seed = 42
         self._num_workers = 2
@@ -66,7 +62,7 @@ class BaseDataset(LightningDataModule):
         pass
 
     def train_dataloader(self, batch_size=1, transforms=None):
-        loader = dataloader(
+        loader = DataLoader(
             self.dataset_train,
             batch_size=batch_size
             if batch_size <= len(self.dataset_train)
@@ -75,11 +71,12 @@ class BaseDataset(LightningDataModule):
             num_workers=self._num_workers,
             drop_last=True,
             pin_memory=True,
+            follow_batch=self.follow_batch,
         )
         return loader
 
     def val_dataloader(self, batch_size=1, transforms=None):
-        loader = dataloader(
+        loader = DataLoader(
             self.dataset_val,
             batch_size=batch_size
             if batch_size <= len(self.dataset_val)
@@ -88,11 +85,12 @@ class BaseDataset(LightningDataModule):
             num_workers=self._num_workers,
             drop_last=True,
             pin_memory=True,
+            follow_batch=self.follow_batch,
         )
         return loader
 
     def test_dataloader(self, batch_size=1, transforms=None):
-        loader = dataloader(
+        loader = DataLoader(
             self.dataset_test,
             batch_size=batch_size
             if batch_size <= len(self.dataset_test)
@@ -101,5 +99,6 @@ class BaseDataset(LightningDataModule):
             num_workers=self._num_workers,
             drop_last=True,
             pin_memory=True,
+            follow_batch=self.follow_batch,
         )
         return loader

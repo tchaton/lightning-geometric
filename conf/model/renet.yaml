@@ -1,0 +1,9 @@
+# @package _group_
+_target_: examples.models.renet.RENet
+params:
+  model:
+    _target_: torch_geometric.nn.models.re_net.RENet
+    params:
+      hidden_channels: 200
+      seq_len: ${dataset.params.seq_len}
+      dropout: 0.5

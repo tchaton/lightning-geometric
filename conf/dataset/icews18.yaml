@@ -1,0 +1,9 @@
+# @package _group_
+_target_: examples.datasets.icews18.ICEWS18Dataset
+params:
+  seq_len: 10
+  follow_batch: ['h_sub', 'h_obj']
+  pre_transform:
+    - _target_: torch_geometric.nn.models.re_net.RENet.pre_transform
+      params:
+        seq_len: ${dataset.params.seq_len}
