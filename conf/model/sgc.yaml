@@ -1,0 +1,5 @@
+# @package _group_
+_target_: examples.models.sgc.SGConvNet
+params:
+  K: 2
+  cached: True
