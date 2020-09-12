@@ -61,7 +61,7 @@ class BaseDataset(LightningDataModule):
 
     def train_dataloader(self, batch_size=1, transforms=None):
         loader = dataloader(
-            self.dataset_val,
+            self.dataset_train,
             batch_size=batch_size
             if batch_size <= len(self.dataset_train)
             else len(self.dataset_train),

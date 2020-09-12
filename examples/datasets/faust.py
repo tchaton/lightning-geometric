@@ -7,7 +7,7 @@ from torch.utils.data import DataLoader, random_split
 from pytorch_lightning import LightningDataModule
 import torch_geometric
 from torch_geometric.datasets import FAUST
-import torch_geometric.transforms as T
+import torch.nn.functional as F
 import pytorch_lightning as pl
 from sklearn.metrics import f1_score
 
@@ -38,11 +38,11 @@ class FAUSTDataset(BaseDataset):
 
     @property
     def num_features(self):
-        return 50  # TODO Find a better way to infer it
+        return 3  # TODO Find a better way to infer it
 
     @property
     def num_classes(self):
-        return 121
+        return 6890
 
     def prepare_data(self):
         path = osp.join(
@@ -57,29 +57,38 @@ class FAUSTDataset(BaseDataset):
         )
 
     def training_step(self, batch, batch_nb):
-        loss = batch.num_graphs * self.loss_op(
-            self.forward(batch.x, batch.edge_index), batch.y
+
+        loss = F.nll_loss(
+            F.log_softmax(
+                self.forward(batch.x, batch.edge_index, batch.edge_attr), dim=1
+            ),
+            batch.y,
         )
         result = pl.TrainResult(loss)
         result.log("train_loss", loss, prog_bar=True)
         return result
 
-    def validation_step(self, batch, batch_nb):
-        preds = self.forward(batch.x, batch.edge_index)
-        loss = batch.num_graphs * self.loss_op(preds, batch.y)
+    def test_step(self, batch, batch_nb):
+        preds = F.log_softmax(
+            self.forward(batch.x, batch.edge_index, batch.edge_attr), dim=1
+        )
+        loss = F.nll_loss(
+            preds,
+            batch.y,
+        )
         result = pl.EvalResult(loss)
-        result.log("val_loss", loss)
+        result.log("test_loss", loss)
         result.y = batch.y
         result.preds = preds
         result.num_graphs = torch.tensor([batch.num_graphs]).float()
         return result
 
-    def validation_epoch_end(self, outputs):
-        avg_loss = outputs["val_loss"].sum() / outputs["num_graphs"].sum()
-        val_f1_score = torch.tensor(
+    def test_epoch_end(self, outputs):
+        avg_loss = outputs["test_loss"].sum() / outputs["num_graphs"].sum()
+        test_f1_score = torch.tensor(
             [f1_score(outputs["y"], outputs["preds"] > 0, average="micro")]
         )
-        result = pl.EvalResult(checkpoint_on=val_f1_score)
-        result.log("val_loss", avg_loss, prog_bar=True)
-        result.log("val_f1_score", val_f1_score, prog_bar=True)
+        result = pl.EvalResult(checkpoint_on=test_f1_score)
+        result.log("test_loss", avg_loss, prog_bar=True)
+        result.log("test_f1_score", test_f1_score, prog_bar=True)
         return result

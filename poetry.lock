@@ -417,6 +417,17 @@ typing-extensions = "*"
 
 [[package]]
 category = "main"
+description = "a versatile halfedge-based data structure for representing and manipulating polygon meshes"
+name = "openmesh"
+optional = false
+python-versions = "*"
+version = "1.1.4.post18"
+
+[package.dependencies]
+numpy = "*"
+
+[[package]]
+category = "main"
 description = "Core utilities for Python packages"
 name = "packaging"
 optional = false
@@ -785,6 +796,14 @@ test = ["pytest", "pytest-cov"]
 
 [[package]]
 category = "main"
+description = "Implementation of the Spline-Based Convolution Operator of SplineCNN in PyTorch"
+name = "torch-spline-conv"
+optional = false
+python-versions = ">=3.6"
+version = "1.2.0"
+
+[[package]]
+category = "main"
 description = "Fast, Extensible Progress Meter"
 name = "tqdm"
 optional = false
@@ -861,7 +880,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "85c2e81b53aee1e4fe42294f104ab4b0f47af12f88f07c327ad03c07b06de483"
+content-hash = "b54fee250351f87713f143b71a0c3f767882d28fa8c567f506229c5abb16d9ef"
 lock-version = "1.0"
 python-versions = "^3.7"
 
@@ -1193,6 +1212,13 @@ omegaconf = [
     {file = "omegaconf-2.0.2-py3-none-any.whl", hash = "sha256:3892d6a6848e1f54869d6ea3720f7208e4bb4276774f97dbb899fb540ac84506"},
     {file = "omegaconf-2.0.2.tar.gz", hash = "sha256:dede7746b3dc18c5670dcec4ce283593d229a055a1c9cf089e2663545396fba0"},
 ]
+openmesh = [
+    {file = "openmesh-1.1.4.post18-cp27-cp27m-macosx_10_13_x86_64.whl", hash = "sha256:6691d3d9906f4329a76ae2b58f8b538f04cc81229a8cac2b09169b7c1a903086"},
+    {file = "openmesh-1.1.4.post18-cp27-cp27mu-manylinux1_x86_64.whl", hash = "sha256:b0629a40bbf60b4e9e2c794aaccbd53aca7f9f24c62575c651037545dc13255b"},
+    {file = "openmesh-1.1.4.post18-cp35-cp35m-macosx_10_13_x86_64.whl", hash = "sha256:2aa05f39ed498b4c78eb8adc6bb131506e278eec7aac3b7cfdfbb1f0a6900d81"},
+    {file = "openmesh-1.1.4.post18-cp37-cp37m-win_amd64.whl", hash = "sha256:895e6fdd23b4bc44e5989ae6c820205a9e913e48dd589a90c6a48ee810771156"},
+    {file = "openmesh-1.1.4.post18.tar.gz", hash = "sha256:1ae2b83086c63859ae53dcb85664ab9b6df4245acb7986377c230524abe9169d"},
+]
 packaging = [
     {file = "packaging-20.4-py2.py3-none-any.whl", hash = "sha256:998416ba6962ae7fbd6596850b80e17859a5753ba17c32284f67bfff33784181"},
     {file = "packaging-20.4.tar.gz", hash = "sha256:4357f74f47b9c12db93624a82154e9b120fa8293699949152b22065d556079f8"},
@@ -1439,6 +1465,9 @@ torch-scatter = [
 ]
 torch-sparse = [
     {file = "torch_sparse-0.6.7.tar.gz", hash = "sha256:f69b2ed35baf2a9853234756a2b19e6f7ce88d2c1f029d1c7ca166d91e1adbd0"},
+]
+torch-spline-conv = [
+    {file = "torch_spline_conv-1.2.0.tar.gz", hash = "sha256:b7a1788004f6c6143d47040f2dd7d8a579a0c69a0cb0b5d7537416bf37c082a5"},
 ]
 tqdm = [
     {file = "tqdm-4.48.2-py2.py3-none-any.whl", hash = "sha256:1a336d2b829be50e46b84668691e0a2719f26c97c62846298dd5ae2937e4d5cf"},
