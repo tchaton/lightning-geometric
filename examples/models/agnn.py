@@ -5,11 +5,12 @@ from torch import nn
 import torch.nn.functional as F
 from torch_geometric.nn import AGNNConv
 import pytorch_lightning as pl
+from examples.models.base_model import BaseModel
 
 
-class AGNNConvNet(pl.LightningModule):
+class AGNNConvNet(BaseModel):
     def __init__(self, *args, **kwargs):
-        super().__init__()
+        super().__init__(*args, **kwargs)
 
         self.save_hyperparameters()
 

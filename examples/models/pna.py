@@ -10,9 +10,9 @@ from torch_geometric.nn import PNAConv, BatchNorm, global_add_pool
 import pytorch_lightning as pl
 
 
-class PNAConvNet(pl.LightningModule):
+class PNAConvNet(BaseModel):
     def __init__(self, *args, **kwargs):
-        super().__init__()
+        super().__init__(*args, **kwargs)
 
         self.save_hyperparameters()
 
