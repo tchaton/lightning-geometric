@@ -32,7 +32,6 @@ class SplineConvNet(pl.LightningModule):
         x = F.elu(self.lin1(x))
         x = F.dropout(x, training=self.training)
         return self.lin2(x)
-        return F.log_softmax(x, dim=1)
 
     def configure_optimizers(self):
         return torch.optim.Adam(self.parameters(), lr=0.02)

@@ -34,8 +34,6 @@ class FAUSTDataset(BaseDataset):
             **kwargs,
         )
 
-        self.loss_op = torch.nn.BCEWithLogitsLoss()
-
     @property
     def num_features(self):
         return 3  # TODO Find a better way to infer it
