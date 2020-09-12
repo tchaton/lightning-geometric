@@ -1,2 +1,4 @@
 # @package _group_
 _target_: examples.datasets.reddit.RedditDataset
+params:
+  sizes: [25, 10]
