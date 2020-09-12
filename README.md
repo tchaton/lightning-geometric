@@ -15,3 +15,4 @@ python train.py model=`{{MODEL}}` dataset=`{{DATASET}}`
 | cora    | sage   |
 | reddit  | sage   |
 | reddit  | agnn   |
+| icews18 | renet  |
