@@ -1,4 +1,0 @@
-# @package _group_
-target: src.models.simple_mlp.Model
-params:
-  nn: 2

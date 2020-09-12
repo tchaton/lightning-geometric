@@ -1,0 +1,4 @@
+# @package _group_
+_target_: examples.models.sage.SAGEConvNet
+params:
+  hidden_channels: 64

@@ -1,0 +1,4 @@
+# @package _group_
+_target_: examples.models.agnn.AGNNConvNet
+params:
+  something: 123

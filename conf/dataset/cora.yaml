@@ -1,0 +1,5 @@
+# @package _group_
+_target_: examples.datasets.cora.CoraDataset
+params:
+  transform:
+    - _target_: torch_geometric.transforms.NormalizeFeatures

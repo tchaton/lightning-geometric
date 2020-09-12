@@ -5,7 +5,9 @@ from omegaconf import OmegaConf, MISSING
 
 defaults = [
     # An error will be raised if the user forgets to specify them`
-    {"project": MISSING},
+    {"model": MISSING},
+    {"dataset": MISSING},
+    {"optimizer": "adam"},
 ]
 
 
@@ -18,25 +20,23 @@ class Trainer:
 @dataclass
 class ObjectConf(Dict[str, Any]):
     # class, class method or function name
-    target: str = MISSING
+    _target_: str = MISSING
     # parameters to pass to target when calling it
     params: Any = field(default_factory=dict)
 
-@dataclass
-class ProjectConf:
-    model: Any = MISSING
 
 @dataclass
 class Config:
     defaults: List[Any] = field(default_factory=lambda: defaults)
     # Hydra will populate this field based on the defaults list
-    project: Any = MISSING
+    model: Any = MISSING
+    dataset: Any = MISSING
+    optimizer: Any = MISSING
 
 
 cs = ConfigStore.instance()
 cs.store(name="config", node=Config)
-cs.store(group="project", name="poex", node=ProjectConf)
-cs.store(group="project", name="tagging", node=ProjectConf)
 
-cs.store(group="project/model", name="simple_mlp", node=ObjectConf)
-cs.store(group="project/model", name="simple_nn", node=ObjectConf)
+cs.store(group="model", name="agnn", node=ObjectConf)
+cs.store(group="dataset", name="cora", node=ObjectConf)
+cs.store(group="optimizer", name="adam", node=ObjectConf)

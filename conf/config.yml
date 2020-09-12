@@ -1,3 +1,4 @@
 defaults:
-  - project/model: simple_mlp
-  - project: poex
+  - model: agnn
+  - dataset: cora
+  - optimizer: adam
