@@ -10,6 +10,7 @@ import pytorch_lightning as pl
 from examples.config import *
 from examples.datasets import *
 from examples.models import *
+from examples.utils import attach_step_and_epoch_functions
 
 
 @hydra.main(config_path="conf", config_name="config")
@@ -28,6 +29,8 @@ def my_app(cfg: DictConfig) -> None:
     trainer = pl.Trainer(
         max_epochs=1, gpus=gpus, limit_train_batches=1, limit_val_batches=4
     )
+
+    attach_step_and_epoch_functions(trainer, model, data_module)
 
     trainer.fit(model, data_module)
     print("Training complete.")
