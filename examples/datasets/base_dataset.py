@@ -39,6 +39,7 @@ class BaseDataset(LightningDataModule):
 
     def __instantiate_transform(self, kwargs):
         self._pre_transform = None
+        self._transform = None
         self._train_transform = None
         self._val_transform = None
         self._test_transform = None
@@ -91,7 +92,7 @@ class BaseDataset(LightningDataModule):
         return loader
 
     def test_dataloader(self, batch_size=1, transforms=None):
-        loader = DataLoader(
+        loader = dataloader(
             self.dataset_test,
             batch_size=batch_size
             if batch_size <= len(self.dataset_test)

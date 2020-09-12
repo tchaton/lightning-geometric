@@ -8,15 +8,15 @@ from torch.utils.data import DataLoader, random_split
 from pytorch_lightning import LightningDataModule
 import pytorch_lightning as pl
 import torch_geometric
-from torch_geometric.datasets import Planetoid
+from torch_geometric.datasets import Reddit
 from torch_geometric.data import NeighborSampler
 import torch_geometric.transforms as T
 from examples.datasets.base_dataset import BaseDataset
 
 
-class CoraDataset(BaseDataset):
+class RedditDataset(BaseDataset):
 
-    NAME = "cora"
+    NAME = "Reddit"
 
     def __init__(
         self,
@@ -41,7 +41,7 @@ class CoraDataset(BaseDataset):
         path = osp.join(
             osp.dirname(osp.realpath(__file__)), "..", "..", "data", self.NAME
         )
-        dataset = Planetoid(path, self.NAME, transform=self._transform)
+        dataset = Reddit(path)
         self.data = dataset[0]
 
     def train_dataloader(self, batch_size=32, transforms=None):
