@@ -60,4 +60,4 @@ class PNAConvNet(pl.LightningModule):
         return self.mlp(x)
 
     def configure_optimizers(self):
-        return torch.optim.Adam(self.parameters(), lr=0.02)
+        return self._init_optim(self.parameters())

@@ -1,3 +1,4 @@
 defaults:
   - model: agnn
   - dataset: cora
+  - optimizer: adam

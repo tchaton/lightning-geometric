@@ -26,4 +26,4 @@ class GATConvNet(pl.LightningModule):
         return self.conv3(x, edge_index) + self.lin3(x)
 
     def configure_optimizers(self):
-        return torch.optim.Adam(self.parameters(), lr=0.02)
+        return self._init_optim(self.parameters())

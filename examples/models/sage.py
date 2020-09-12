@@ -5,11 +5,12 @@ from torch import nn
 import torch.nn.functional as F
 from torch_geometric.nn import SAGEConv
 import pytorch_lightning as pl
+from examples.models.base_model import BaseModel
 
 
-class SAGEConvNet(pl.LightningModule):
+class SAGEConvNet(BaseModel):
     def __init__(self, *args, **kwargs):
-        super().__init__()
+        super().__init__(*args, **kwargs)
 
         self.save_hyperparameters()
         self.num_layers = 2
@@ -28,4 +29,4 @@ class SAGEConvNet(pl.LightningModule):
         return self.lin(x)
 
     def configure_optimizers(self):
-        return torch.optim.Adam(self.parameters(), lr=0.02)
+        return self._init_optim(self.parameters())

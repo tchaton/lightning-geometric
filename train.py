@@ -1,5 +1,6 @@
 import os
 import hydra
+from hydra.utils import instantiate
 from omegaconf import OmegaConf
 
 os.environ["HYDRA_FULL_ERROR"] = "1"
@@ -17,8 +18,12 @@ from examples.utils import attach_step_and_epoch_functions
 def my_app(cfg: DictConfig) -> None:
     print(OmegaConf.to_yaml(cfg))
 
-    data_module = hydra.utils.instantiate(cfg.dataset)
-    model = hydra.utils.instantiate(cfg.model, **data_module.hyper_parameters)
+    data_module = instantiate(cfg.dataset)
+    model = instantiate(
+        cfg.model,
+        optimizer=cfg.optimizer,
+        **data_module.hyper_parameters,
+    )
 
     checkpoint_callback = pl.callbacks.ModelCheckpoint(filepath=None, save_last=True)
 
