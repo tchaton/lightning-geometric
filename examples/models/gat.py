@@ -23,8 +23,7 @@ class GATConvNet(pl.LightningModule):
     def forward(self, x, edge_index):
         x = F.elu(self.conv1(x, edge_index) + self.lin1(x))
         x = F.elu(self.conv2(x, edge_index) + self.lin2(x))
-        x = self.conv3(x, edge_index) + self.lin3(x)
-        return x
+        return self.conv3(x, edge_index) + self.lin3(x)
 
     def configure_optimizers(self):
         return torch.optim.Adam(self.parameters(), lr=0.02)

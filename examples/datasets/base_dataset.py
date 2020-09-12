@@ -29,8 +29,13 @@ class BaseDataset(LightningDataModule):
         self.__instantiate_transform(kwargs)
         super().__init__(*args, **kwargs)
 
+        self.dataset_train = None
+        self.dataset_val = None
+        self.dataset_test = None
+
         self._seed = 42
         self._num_workers = 2
+        self._hyper_parameters = {}
 
     def __instantiate_transform(self, kwargs):
         self._pre_transform = None

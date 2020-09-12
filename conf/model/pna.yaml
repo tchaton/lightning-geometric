@@ -1,0 +1,9 @@
+# @package _group_
+_target_: examples.models.pna.PNAConvNet
+params:
+  towers: 5
+  pre_layers: 1
+  post_layers: 1
+  divide_input: False
+  aggregators: ['mean', 'min', 'max', 'std']
+  scalers: ['identity', 'amplification', 'attenuation']
