@@ -1,4 +1,2 @@
 # @package _group_
-_target_: examples.models.tag.TAGConvNet
-params:
-  hidden_channels: 16
+_target_: examples.models.tag.DNAConvNet
