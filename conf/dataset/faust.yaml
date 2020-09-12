@@ -1,0 +1,12 @@
+# @package _group_
+_target_: examples.datasets.faust.FAUSTDataset
+params:
+  pre_transform:
+    - _target_: torch_geometric.transforms.FaceToEdge
+    - _target_: torch_geometric.transforms.Constant
+      params:
+        value: 1
+  train_transform:
+    - _target_: torch_geometric.transforms.Cartesian
+  test_transform:
+    - _target_: torch_geometric.transforms.Cartesian

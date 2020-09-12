@@ -2,6 +2,7 @@ import os
 import os.path as osp
 import numpy as np
 from functools import partial
+from hydra.utils import instantiate
 import torch
 from torch.utils.data import DataLoader, random_split
 from pytorch_lightning import LightningDataModule
@@ -18,14 +19,30 @@ dataloader = partial(
 
 class BaseDataset(LightningDataModule):
 
-    NAME = "PPI"
+    NAME = ...
 
     def __init__(
         self,
         *args,
         **kwargs,
     ):
+        self.__instantiate_transform(kwargs)
         super().__init__(*args, **kwargs)
+
+        self._seed = 42
+        self._num_workers = 2
+
+    def __instantiate_transform(self, kwargs):
+        self._pre_transform = None
+        self._train_transform = None
+        self._val_transform = None
+        self._test_transform = None
+
+        for k in [k for k in kwargs]:
+            if "transform" in k and kwargs.get(k) is not None:
+                transform = T.Compose([instantiate(t) for t in kwargs.get(k)])
+                setattr(self, f"_{k}", transform)
+                del kwargs[k]
 
     @property
     def num_features(self):
