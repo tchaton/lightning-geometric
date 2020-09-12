@@ -1,6 +1,7 @@
 import os
 import hydra
 from omegaconf import OmegaConf
+
 os.environ["HYDRA_FULL_ERROR"] = "1"
 from omegaconf import DictConfig
 
@@ -9,6 +10,7 @@ import pytorch_lightning as pl
 from examples.config import *
 from examples.datasets import *
 from examples.models import *
+
 
 @hydra.main(config_path="conf", config_name="config")
 def my_app(cfg: DictConfig) -> None:
@@ -24,12 +26,12 @@ def my_app(cfg: DictConfig) -> None:
     resume_from_checkpoint = None
 
     trainer = pl.Trainer(
-        max_epochs=2,
-        gpus=gpus,
+        max_epochs=1, gpus=gpus, limit_train_batches=1, limit_val_batches=4
     )
 
     trainer.fit(model, data_module)
     print("Training complete.")
+
 
 if __name__ == "__main__":
     my_app()
