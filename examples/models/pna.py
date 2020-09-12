@@ -5,7 +5,6 @@ from torch import nn
 from torch.nn import ModuleList, Embedding
 from torch.nn import Sequential, ReLU, Linear
 from torch.optim.lr_scheduler import ReduceLROnPlateau
-from torch_geometric.utils import degree
 import torch.nn.functional as F
 from torch_geometric.nn import PNAConv, BatchNorm, global_add_pool
 import pytorch_lightning as pl
@@ -46,7 +45,7 @@ class PNAConvNet(pl.LightningModule):
             ReLU(),
             Linear(kwargs["edge_dim"], 25),
             ReLU(),
-            Linear(25, 1),
+            Linear(25, kwargs["num_classes"]),
         )
 
     def forward(self, x, edge_index, edge_attr, batch):

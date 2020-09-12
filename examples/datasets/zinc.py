@@ -10,13 +10,15 @@ from torch_geometric.datasets import ZINC
 import torch.nn.functional as F
 import pytorch_lightning as pl
 from sklearn.metrics import f1_score
-
+from torch_geometric.utils import degree
 from examples.datasets.base_dataset import BaseDataset
+from examples.models.pna import PNAConvNet
 
 
 class ZINCDataset(BaseDataset):
 
     NAME = "ZINC"
+    COMPATIBLE_MODELS = [PNAConvNet]
 
     def __init__(
         self,
@@ -37,25 +39,21 @@ class ZINCDataset(BaseDataset):
         return 50
 
     @property
-    def num_features(self):
-        return 3  # TODO Find a better way to infer it
-
-    @property
     def num_classes(self):
-        return 6890
+        return 1
 
     @property
     def deg(self):
         # Compute in-degree histogram over training data.
         deg = torch.zeros(5, dtype=torch.long)
         if self.dataset_train is not None:
-            for data in train_dataset:
+            for data in self.dataset_train:
                 d = degree(
                     data.edge_index[1], num_nodes=data.num_nodes, dtype=torch.long
                 )
                 deg += torch.bincount(d, minlength=deg.numel())
         else:
-            deg = torch.ones(5, dtype=torch.long)
+            deg = torch.tensor([[0, 41130, 117278, 70152, 3104]])
         return deg.numpy().tolist()
 
     @property
