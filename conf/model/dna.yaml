@@ -6,4 +6,4 @@ params:
   heads: 8
   groups: 16
   dropout: 0.8
-  cached: True
+  cached: False

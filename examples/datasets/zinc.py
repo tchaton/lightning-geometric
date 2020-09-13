@@ -12,13 +12,11 @@ import pytorch_lightning as pl
 from sklearn.metrics import f1_score
 from torch_geometric.utils import degree
 from examples.datasets.base_dataset import BaseDataset
-from examples.models.pna import PNAConvNet
 
 
 class ZINCDataset(BaseDataset):
 
     NAME = "ZINC"
-    COMPATIBLE_MODELS = [PNAConvNet]
 
     def __init__(
         self,
@@ -82,22 +80,30 @@ class ZINCDataset(BaseDataset):
         result.log("train_loss", loss, prog_bar=True)
         return result
 
-    def test_step(self, batch, batch_nb):
+    def _step(self, batch, batch_nb, stage=None):
         preds = self.forward(batch.x, batch.edge_index, batch.edge_attr, batch.batch)
-        loss = (out.squeeze() - batch.y).abs().mean()
-        result = pl.EvalResult(loss)
-        result.log("test_loss", loss)
+        loss = (preds.squeeze() - batch.y).abs().mean()
+        result = pl.EvalResult(checkpoint_on=loss)
+        result.log(f"{stage}_loss", loss)
         result.y = batch.y
         result.preds = preds
         result.num_graphs = torch.tensor([batch.num_graphs]).float()
         return result
 
-    def test_epoch_end(self, outputs):
-        avg_loss = outputs["test_loss"].sum() / outputs["num_graphs"].sum()
-        test_f1_score = torch.tensor(
-            [f1_score(outputs["y"], outputs["preds"] > 0, average="micro")]
-        )
-        result = pl.EvalResult(checkpoint_on=test_f1_score)
-        result.log("test_loss", avg_loss, prog_bar=True)
-        result.log("test_f1_score", test_f1_score, prog_bar=True)
+    def _epoch_end_step(self, outputs, stage=None):
+        avg_loss = outputs[f"{stage}_loss"].mean()
+        result = pl.EvalResult(checkpoint_on=avg_loss)
+        result.log(f"{stage}_loss", avg_loss, prog_bar=True)
         return result
+
+    def validation_step(self, batch, batch_nb):
+        return self._step(batch, batch_nb, stage="val")
+
+    def validation_epoch_end(self, outputs):
+        return self._epoch_end_step(outputs, stage="val")
+
+    def test_step(self, batch, batch_nb):
+        return self._step(batch, batch_nb, stage="test")
+
+    def test_epoch_end(self, outputs):
+        return self._epoch_end_step(outputs, stage="test")

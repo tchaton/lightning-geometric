@@ -1,5 +1,7 @@
 # @package _group_
 _target_: examples.models.sgc.SGConvNet
 params:
+  hidden_channels: 64
+  num_layers: 2
   K: 2
-  cached: True
+  cached: False

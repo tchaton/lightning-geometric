@@ -76,12 +76,6 @@ class CoraDataset(BaseDataset):
     def test_step(self, batch, batch_nb):
         return self._step(batch, batch_nb, stage="test")
 
-    def validation_epoch_end(self, outputs):
-        return outputs
-
-    def test_epoch_end(self, outputs):
-        return outputs
-
 
 class CoraNeighborSamplerDataset(CoraDataset):
 

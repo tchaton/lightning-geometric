@@ -8,6 +8,7 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau
 import torch.nn.functional as F
 from torch_geometric.nn import PNAConv, BatchNorm, global_add_pool
 import pytorch_lightning as pl
+from examples.models.base_model import BaseModel
 
 
 class PNAConvNet(BaseModel):
@@ -19,12 +20,9 @@ class PNAConvNet(BaseModel):
         self.node_emb = Embedding(kwargs["node_vocab"], kwargs["node_dim"])
         self.edge_emb = Embedding(kwargs["edge_vocab"], kwargs["edge_dim"])
 
-        aggregators = ["mean", "min", "max", "std"]
-        scalers = ["identity", "amplification", "attenuation"]
-
         self.convs = ModuleList()
         self.batch_norms = ModuleList()
-        for _ in range(4):
+        for _ in range(kwargs["num_layers"]):
             conv = PNAConv(
                 in_channels=kwargs["node_dim"],
                 out_channels=kwargs["node_dim"],
@@ -43,9 +41,9 @@ class PNAConvNet(BaseModel):
         self.mlp = Sequential(
             Linear(kwargs["node_dim"], kwargs["edge_dim"]),
             ReLU(),
-            Linear(kwargs["edge_dim"], 25),
+            Linear(kwargs["edge_dim"], kwargs["hidden_channels"]),
             ReLU(),
-            Linear(25, kwargs["num_classes"]),
+            Linear(kwargs["hidden_channels"], kwargs["num_classes"]),
         )
 
     def forward(self, x, edge_index, edge_attr, batch):

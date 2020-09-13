@@ -14,12 +14,21 @@ class SGConvNet(BaseModel):
 
         self.save_hyperparameters()
 
-        self.conv = SGConv(
-            kwargs["num_features"],
-            kwargs["num_classes"],
-            K=kwargs["K"],
-            cached=kwargs["cached"],
-        )
+        self.convs = nn.ModuleList()
+        self.convs.append(SGConv(kwargs["num_features"], kwargs["hidden_channels"]))
+        for _ in range(kwargs["num_layers"] - 2):
+            self.convs.append(
+                SGConv(
+                    kwargs["hidden_channels"],
+                    kwargs["hidden_channels"],
+                    K=kwargs["K"],
+                    cached=kwargs["cached"],
+                )
+            )
+        self.convs.append(SGConv(kwargs["hidden_channels"], kwargs["num_classes"]))
 
     def forward(self, x, adjs):
-        return self.conv(x, adjs[0].edge_index)
+        for idx, conv in enumerate(self.convs):
+            x = F.relu(conv(x, adjs[idx].edge_index))
+            x = F.dropout(x, training=self.training)
+        return x

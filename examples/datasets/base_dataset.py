@@ -27,7 +27,7 @@ class BaseDataset(LightningDataModule):
         self.dataset_train = None
         self.dataset_val = None
         self.dataset_test = None
-        self.follow_batch = None
+        self.follow_batch = []
 
         self._seed = 42
         self._num_workers = 2

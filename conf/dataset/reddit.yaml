@@ -1,4 +1,4 @@
 # @package _group_
-_target_: examples.datasets.reddit.RedditDataset
+_target_: examples.datasets.reddit.RedditNeighborSamplerDataset
 params:
   sizes: [25, 10]
