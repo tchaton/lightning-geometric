@@ -13,20 +13,17 @@ class SAGEConvNet(BaseModel):
         super().__init__(*args, **kwargs)
 
         self.save_hyperparameters()
-        self.num_layers = 2
-        self.convs = torch.nn.ModuleList()
+
+        self.convs = nn.ModuleList()
         self.convs.append(SAGEConv(kwargs["num_features"], kwargs["hidden_channels"]))
-        self.convs.append(
-            SAGEConv(kwargs["hidden_channels"], kwargs["hidden_channels"])
-        )
-        self.lin = torch.nn.Linear(kwargs["hidden_channels"], kwargs["num_classes"])
+        for _ in range(kwargs["num_layers"] - 2):
+            self.convs.append(
+                SAGEConv(kwargs["hidden_channels"], kwargs["hidden_channels"])
+            )
+        self.convs.append(SAGEConv(kwargs["hidden_channels"], kwargs["num_classes"]))
 
     def forward(self, x, adjs):
-        x = F.dropout(x, training=self.training)
-        x = self.convs[0](x, adjs[0].edge_index)
-        x = self.convs[1](x, adjs[1].edge_index)
-        x = F.dropout(x, training=self.training)
-        return self.lin(x)
-
-    def configure_optimizers(self):
-        return self._init_optim(self.parameters())
+        for idx, conv in enumerate(self.convs):
+            x = F.relu(conv(x, adjs[idx].edge_index))
+            x = F.dropout(x, training=self.training)
+        return x

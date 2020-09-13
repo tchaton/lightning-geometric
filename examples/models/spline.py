@@ -33,6 +33,3 @@ class SplineConvNet(BaseModel):
         x = F.elu(self.lin1(x))
         x = F.dropout(x, training=self.training)
         return self.lin2(x)
-
-    def configure_optimizers(self):
-        return self._init_optim(self.parameters())

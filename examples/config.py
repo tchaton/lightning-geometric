@@ -7,7 +7,8 @@ defaults = [
     # An error will be raised if the user forgets to specify them`
     {"model": MISSING},
     {"dataset": MISSING},
-    {"optimizer": "adam"},
+    {"optimizers": "adam"},
+    {"trainer": "debugging"},
 ]
 
 
@@ -26,17 +27,24 @@ class ObjectConf(Dict[str, Any]):
 
 
 @dataclass
+class OptimizerConf(Dict[str, Any]):
+    # class, class method or function name
+    optimizers: List = MISSING
+
+
+@dataclass
 class Config:
     defaults: List[Any] = field(default_factory=lambda: defaults)
     # Hydra will populate this field based on the defaults list
     model: Any = MISSING
     dataset: Any = MISSING
-    optimizer: Any = MISSING
+    optimizers: Any = MISSING
+    trainer: Any = MISSING
 
 
 cs = ConfigStore.instance()
 cs.store(name="config", node=Config)
-
 cs.store(group="model", name="agnn", node=ObjectConf)
 cs.store(group="dataset", name="cora", node=ObjectConf)
-cs.store(group="optimizer", name="adam", node=ObjectConf)
+cs.store(group="optimizers", name="adam", node=OptimizerConf)
+cs.store(group="trainer", name="debugging", node=ObjectConf)

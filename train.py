@@ -21,7 +21,7 @@ def my_app(cfg: DictConfig) -> None:
     data_module = instantiate(cfg.dataset)
     model = instantiate(
         cfg.model,
-        optimizer=cfg.optimizer,
+        optimizers=cfg.optimizers.optimizers,
         **data_module.hyper_parameters,
     )
 
@@ -31,9 +31,7 @@ def my_app(cfg: DictConfig) -> None:
 
     resume_from_checkpoint = None
 
-    trainer = pl.Trainer(
-        max_epochs=1, gpus=gpus, limit_train_batches=1, limit_val_batches=4
-    )
+    trainer = instantiate(cfg.trainer, gpus=gpus)
 
     attach_step_and_epoch_functions(trainer, model, data_module)
 

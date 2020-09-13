@@ -47,6 +47,35 @@ class RedditDataset(BaseDataset):
         dataset = Reddit(path)
         self.data = dataset[0]
 
+    def _step(self, batch, batch_nb):
+        preds = self.forward(self.data.x[batch[1]], batch[2])
+        targets = self.data.y[batch[1]]
+        loss = F.nll_loss(
+            F.log_softmax(preds, -1),
+            targets,
+        )
+        return loss, targets, preds
+
+    def training_step(self, batch, batch_nb):
+        loss, targets, preds = self._step(batch, batch_nb)
+        result = pl.TrainResult(loss)
+        result.log("train_loss", loss)
+        return result
+
+    def validation_step(self, batch, batch_nb):
+        loss, targets, preds = self._step(batch, batch_nb)
+        result = pl.EvalResult(loss)
+        result.log("val_loss", loss)
+        return result
+
+    def test_step(self, batch, batch_nb):
+        loss, targets, preds = self._step(batch, batch_nb)
+        result = pl.EvalResult(loss)
+        result.log("test_loss", loss)
+        return result
+
+
+class RedditNeighborSamplerDataset(RedditDataset):
     def train_dataloader(self, batch_size=32, transforms=None):
         return NeighborSampler(
             self.data.edge_index,
@@ -63,7 +92,7 @@ class RedditDataset(BaseDataset):
             node_idx=self.data.val_mask,
             sizes=self.sizes,
             batch_size=batch_size,
-            shuffle=True,
+            shuffle=False,
             num_workers=self._num_workers,
         )
 
@@ -73,15 +102,6 @@ class RedditDataset(BaseDataset):
             node_idx=self.data.test_mask,
             sizes=self.sizes,
             batch_size=batch_size,
-            shuffle=True,
+            shuffle=False,
             num_workers=self._num_workers,
         )
-
-    def training_step(self, batch, batch_nb):
-        loss = F.nll_loss(
-            F.log_softmax(self.forward(self.data.x[batch[1]], batch[2]), -1),
-            self.data.y[batch[1]],
-        )
-        result = pl.TrainResult(loss)
-        result.log("train_loss", loss)
-        return result
