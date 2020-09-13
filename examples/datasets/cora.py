@@ -27,15 +27,11 @@ class CoraDataset(BaseDataset):
 
     @property
     def num_features(self):
-        return 1433  # TODO Find a better way to infer it
+        return 1433
 
     @property
     def num_classes(self):
         return 7
-
-    @property
-    def hyper_parameters(self):
-        return {"num_features": self.num_features, "num_classes": self.num_classes}
 
     def prepare_data(self):
         path = osp.join(
@@ -43,36 +39,6 @@ class CoraDataset(BaseDataset):
         )
         dataset = Planetoid(path, self.NAME, transform=self._transform)
         self.data = dataset[0]
-
-    def train_dataloader(self, batch_size=32, transforms=None):
-        return NeighborSampler(
-            self.data.edge_index,
-            node_idx=self.data.train_mask,
-            sizes=[25, 10],
-            batch_size=batch_size,
-            shuffle=True,
-            num_workers=self._num_workers,
-        )
-
-    def val_dataloader(self, batch_size=32, transforms=None):
-        return NeighborSampler(
-            self.data.edge_index,
-            node_idx=self.data.val_mask,
-            sizes=[25, 10],
-            batch_size=batch_size,
-            shuffle=True,
-            num_workers=self._num_workers,
-        )
-
-    def test_dataloader(self, batch_size=32, transforms=None):
-        return NeighborSampler(
-            self.data.edge_index,
-            node_idx=self.data.test_mask,
-            sizes=[25, 10],
-            batch_size=batch_size,
-            shuffle=True,
-            num_workers=self._num_workers,
-        )
 
     def training_step(self, batch, batch_nb):
         loss = F.nll_loss(
@@ -82,3 +48,54 @@ class CoraDataset(BaseDataset):
         result = pl.TrainResult(loss)
         result.log("train_loss", loss)
         return result
+
+    def training_step(self, batch, batch_nb):
+        loss = F.nll_loss(
+            F.log_softmax(self.forward(self.data.x[batch[1]], batch[2]), -1),
+            self.data.y[batch[1]],
+        )
+        result = pl.TrainResult(loss)
+        result.log("train_loss", loss)
+        return result
+
+
+class CoraNeighborSamplerDataset(CoraDataset):
+
+    NAME = "cora"
+
+    def __init__(
+        self,
+        *args,
+        **kwargs,
+    ):
+        super().__init__(*args, **kwargs)
+
+    def train_dataloader(self, batch_size=32, transforms=None):
+        return NeighborSampler(
+            self.data.edge_index,
+            node_idx=self.data.train_mask,
+            sizes=[-1, 3],
+            batch_size=batch_size,
+            shuffle=True,
+            num_workers=self._num_workers,
+        )
+
+    def val_dataloader(self, batch_size=32, transforms=None):
+        return NeighborSampler(
+            self.data.edge_index,
+            node_idx=self.data.val_mask,
+            sizes=[-1, 3],
+            batch_size=batch_size,
+            shuffle=True,
+            num_workers=self._num_workers,
+        )
+
+    def test_dataloader(self, batch_size=32, transforms=None):
+        return NeighborSampler(
+            self.data.edge_index,
+            node_idx=self.data.test_mask,
+            sizes=[-1, 3],
+            batch_size=batch_size,
+            shuffle=True,
+            num_workers=self._num_workers,
+        )

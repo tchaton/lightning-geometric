@@ -1,5 +1,5 @@
 # @package _group_
-_target_: examples.datasets.cora.CoraDataset
+_target_: examples.datasets.cora.CoraNeighborSamplerDataset
 params:
   transform:
     - _target_: torch_geometric.transforms.NormalizeFeatures
