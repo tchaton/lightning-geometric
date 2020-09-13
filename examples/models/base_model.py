@@ -24,6 +24,7 @@ class BaseModel(pl.LightningModule):
 
     @staticmethod
     def _validate_optimizers_conf(optimizers):
+        names = []
         for optim_conf in optimizers:
             not_name = not hasattr(optim_conf, "name")
             not_target = not hasattr(optim_conf, "_target_")
@@ -37,6 +38,12 @@ class BaseModel(pl.LightningModule):
                 if not_params:
                     msg += f"params should be within {optim_conf} "
                 raise Exception(f"{msg}")
+            if not not_name:
+                names.append(optim_conf.name)
+        if len(names) != len(set(names)):
+            raise Exception(
+                f"Each optimizer name should be unique. Here is the list of optimizer names: {names}"
+            )
         return optimizers
 
     @staticmethod
