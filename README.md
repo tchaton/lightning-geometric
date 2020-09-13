@@ -1,10 +1,23 @@
 # Pytorch Geometric in Pytorch Lightning
 
+### Setup
+
+```python
+brew install cmake
+pyenv install 3.7.8
+pyenv local 3.7.8
+python -m venv
+source .venv/bin/activate
+poetry install
+```
+
+### PRINCIPAL CMD
+
 ```python
 python train.py model={{MODEL}} dataset={{DATASET}}
 ```
 
-## SUPPORTED COMBINAISON
+### SUPPORTED COMBINAISONS
 
 | `{{DATASET}}` | `{{MODEL}}` | DATASET DESCRIPTION                                                                                                                                                                       | MODEL DESCRIPTION                                                                                                                                                        | WORKING     |     |
 | ------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------- | --- |
