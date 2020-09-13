@@ -29,4 +29,4 @@ class AGNNConvNet(BaseModel):
         return self.mlp_out(x)
 
     def configure_optimizers(self):
-        return self._init_optim(self.parameters())
+        return self._init_optim("adam", self.parameters())

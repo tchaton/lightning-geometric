@@ -1,0 +1,7 @@
+# @package _group_
+_target_: pytorch_lightning.Trainer
+params:
+  max_epochs: 1
+  limit_train_batches: 1
+  limit_val_batches: 4
+  limit_test_batches: 4

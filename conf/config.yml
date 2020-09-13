@@ -1,4 +1,5 @@
 defaults:
   - model: agnn
   - dataset: cora
-  - optimizer: adam
+  - optimizers: adam
+  - trainer: debbuging
