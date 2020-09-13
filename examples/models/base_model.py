@@ -13,9 +13,13 @@ class BaseModel(pl.LightningModule):
     def __init__(self, *args, **kwargs):
         super().__init__()
 
+        optimizers_conf = self._validate_optimizers_conf(kwargs["optimizers"])
+        self._optimizer_name = None
+        if len(optimizers_conf) == 1:
+            self._optimizer_name = optimizers_conf[0]["name"]
         self._init_optim = partial(
             self._init_optim,
-            optimizers_conf=self._validate_optimizers_conf(kwargs["optimizers"]),
+            optimizers_conf=optimizers_conf,
         )
 
     @staticmethod
@@ -47,3 +51,11 @@ class BaseModel(pl.LightningModule):
             )
         else:
             raise Exception("Optimizer should be defined within configuration files")
+
+    def configure_optimizers(self):
+        if self._optimizer_name is not None:
+            return self._init_optim(self._optimizer_name, self.parameters())
+        else:
+            raise Exception(
+                "Multiple optimizers are defined. Please, override configure_optimizers function"
+            )

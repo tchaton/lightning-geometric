@@ -24,6 +24,3 @@ class RENet(BaseModel):
 
     def forward(self, x):
         return self.model(x)
-
-    def configure_optimizers(self):
-        return self._init_optim(self.parameters())

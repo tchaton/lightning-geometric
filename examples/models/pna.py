@@ -58,6 +58,3 @@ class PNAConvNet(BaseModel):
         x = global_add_pool(x, batch)
 
         return self.mlp(x)
-
-    def configure_optimizers(self):
-        return self._init_optim(self.parameters())

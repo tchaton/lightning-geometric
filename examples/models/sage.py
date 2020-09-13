@@ -27,6 +27,3 @@ class SAGEConvNet(BaseModel):
         x = self.convs[1](x, adjs[1].edge_index)
         x = F.dropout(x, training=self.training)
         return self.lin(x)
-
-    def configure_optimizers(self):
-        return self._init_optim(self.parameters())

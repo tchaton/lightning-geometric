@@ -20,7 +20,4 @@ class TAGConvNet(BaseModel):
     def forward(self, x, adjs):
         x = F.relu(self.conv1(x, adjs[0].edge_index))
         x = F.dropout(x, training=self.training)
-        return self.conv2(x, adjs[1].edge_index)
-
-    def configure_optimizers(self):
         return self._init_optim(self.parameters())

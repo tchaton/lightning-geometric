@@ -25,6 +25,3 @@ class GATConvNet(BaseModel):
         x = F.elu(self.conv1(x, edge_index) + self.lin1(x))
         x = F.elu(self.conv2(x, edge_index) + self.lin2(x))
         return self.conv3(x, edge_index) + self.lin3(x)
-
-    def configure_optimizers(self):
-        return self._init_optim(self.parameters())

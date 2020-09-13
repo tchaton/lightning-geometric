@@ -40,6 +40,3 @@ class DNAConvNet(BaseModel):
         x = x_all[:, -1]
         x = F.dropout(x, p=0.5, training=self.training)
         return self.lin2(x)
-
-    def configure_optimizers(self):
-        return self._init_optim(self.parameters())

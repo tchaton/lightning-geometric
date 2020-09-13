@@ -23,6 +23,3 @@ class SGConvNet(BaseModel):
 
     def forward(self, x, adjs):
         return self.conv(x, adjs[0].edge_index)
-
-    def configure_optimizers(self):
-        return self._init_optim(self.parameters())
