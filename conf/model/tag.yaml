@@ -1,2 +1,5 @@
 # @package _group_
-_target_: examples.models.tag.DNAConvNet
+_target_: examples.models.tag.TAGConvNet
+params:
+  hidden_channels: 64
+  num_layers: 2

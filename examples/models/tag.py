@@ -14,10 +14,16 @@ class TAGConvNet(BaseModel):
 
         self.save_hyperparameters()
 
-        self.conv1 = TAGConv(kwargs["num_features"], kwargs["hidden_channels"])
-        self.conv2 = TAGConv(kwargs["hidden_channels"], kwargs["num_classes"])
+        self.convs = nn.ModuleList()
+        self.convs.append(TAGConv(kwargs["num_features"], kwargs["hidden_channels"]))
+        for _ in range(kwargs["num_layers"] - 2):
+            self.convs.append(
+                TAGConv(kwargs["hidden_channels"], kwargs["hidden_channels"])
+            )
+        self.convs.append(TAGConv(kwargs["hidden_channels"], kwargs["num_classes"]))
 
     def forward(self, x, adjs):
-        x = F.relu(self.conv1(x, adjs[0].edge_index))
-        x = F.dropout(x, training=self.training)
-        return self._init_optim(self.parameters())
+        for idx, conv in enumerate(self.convs):
+            x = F.relu(conv(x, adjs[idx].edge_index))
+            x = F.dropout(x, training=self.training)
+        return x

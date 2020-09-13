@@ -65,7 +65,7 @@ class CoraDataset(BaseDataset):
         preds = F.log_softmax(self.forward(batch.x, adjs), -1)[stage_mask]
         loss = F.nll_loss(preds, targets)
         acc = self.acc_meter(preds, targets)
-        result = pl.EvalResult(loss)
+        result = pl.EvalResult(checkpoint_on=loss)
         result.log(f"{stage}_loss", loss, prog_bar=True)
         result.log(f"{stage}_acc", acc, prog_bar=True)
         return result
@@ -75,6 +75,12 @@ class CoraDataset(BaseDataset):
 
     def test_step(self, batch, batch_nb):
         return self._step(batch, batch_nb, stage="test")
+
+    def validation_epoch_end(self, outputs):
+        return outputs
+
+    def test_epoch_end(self, outputs):
+        return outputs
 
 
 class CoraNeighborSamplerDataset(CoraDataset):
