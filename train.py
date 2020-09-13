@@ -32,7 +32,11 @@ def my_app(cfg: DictConfig) -> None:
     resume_from_checkpoint = None
 
     trainer = pl.Trainer(
-        max_epochs=1, gpus=gpus, limit_train_batches=1, limit_val_batches=4
+        max_epochs=1,
+        gpus=gpus,
+        limit_train_batches=1,
+        limit_val_batches=4,
+        limit_test_batches=4,
     )
 
     attach_step_and_epoch_functions(trainer, model, data_module)

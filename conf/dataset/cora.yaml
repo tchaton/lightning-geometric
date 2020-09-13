@@ -1,5 +1,6 @@
 # @package _group_
 _target_: examples.datasets.cora.CoraNeighborSamplerDataset
 params:
+  num_layers: ${model.params.num_layers}
   transform:
     - _target_: torch_geometric.transforms.NormalizeFeatures
