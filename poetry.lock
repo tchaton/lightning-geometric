@@ -290,6 +290,14 @@ version = "1.2.0"
 
 [[package]]
 category = "main"
+description = "Small personal collection of python utility functions"
+name = "littleutils"
+optional = false
+python-versions = "*"
+version = "0.2.2"
+
+[[package]]
+category = "main"
 description = "lightweight wrapper around basic LLVM functionality"
 name = "llvmlite"
 optional = false
@@ -405,6 +413,24 @@ signedtoken = ["cryptography", "pyjwt (>=1.0.0)"]
 
 [[package]]
 category = "main"
+description = "Open Graph Benchmark"
+name = "ogb"
+optional = false
+python-versions = "*"
+version = "1.2.3"
+
+[package.dependencies]
+numpy = ">=1.16.0"
+outdated = ">=0.2.0"
+pandas = ">=0.24.0"
+scikit-learn = ">=0.20.0"
+six = ">=1.12.0"
+torch = ">=1.2.0"
+tqdm = ">=4.29.0"
+urllib3 = ">=1.24.0"
+
+[[package]]
+category = "main"
 description = "A flexible configuration library"
 name = "omegaconf"
 optional = false
@@ -425,6 +451,18 @@ version = "1.1.4.post18"
 
 [package.dependencies]
 numpy = "*"
+
+[[package]]
+category = "main"
+description = "Check if a version of a PyPI package is outdated"
+name = "outdated"
+optional = false
+python-versions = "*"
+version = "0.2.0"
+
+[package.dependencies]
+littleutils = "*"
+requests = "*"
 
 [[package]]
 category = "main"
@@ -880,7 +918,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "b54fee250351f87713f143b71a0c3f767882d28fa8c567f506229c5abb16d9ef"
+content-hash = "2682d58c27ed37a3c682371b2dfc38c71df2879834a6cde5a7b04c2df7fef0e4"
 lock-version = "1.0"
 python-versions = "^3.7"
 
@@ -1064,6 +1102,9 @@ kiwisolver = [
     {file = "kiwisolver-1.2.0-cp38-none-win_amd64.whl", hash = "sha256:18d749f3e56c0480dccd1714230da0f328e6e4accf188dd4e6884bdd06bf02dd"},
     {file = "kiwisolver-1.2.0.tar.gz", hash = "sha256:247800260cd38160c362d211dcaf4ed0f7816afb5efe56544748b21d6ad6d17f"},
 ]
+littleutils = [
+    {file = "littleutils-0.2.2.tar.gz", hash = "sha256:e6cae3a4203e530d51c9667ed310ffe3b1948f2876e3d69605b3de4b7d96916f"},
+]
 llvmlite = [
     {file = "llvmlite-0.34.0-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:11342e5ac320c953590bdd9d0dec8c52f4b5252c4c6335ba25f1e7b9f91f9325"},
     {file = "llvmlite-0.34.0-cp36-cp36m-manylinux2010_i686.whl", hash = "sha256:5bdf0ce430adfaf938ced5844d12f80616eb8321b5b9edfc45ef84ada5c5242c"},
@@ -1208,6 +1249,10 @@ oauthlib = [
     {file = "oauthlib-3.1.0-py2.py3-none-any.whl", hash = "sha256:df884cd6cbe20e32633f1db1072e9356f53638e4361bef4e8b03c9127c9328ea"},
     {file = "oauthlib-3.1.0.tar.gz", hash = "sha256:bee41cc35fcca6e988463cacc3bcb8a96224f470ca547e697b604cc697b2f889"},
 ]
+ogb = [
+    {file = "ogb-1.2.3-py3-none-any.whl", hash = "sha256:fed3be08d878ceedea1cccf47e2cfe58216beb450fa685e167e31991f0638cad"},
+    {file = "ogb-1.2.3.tar.gz", hash = "sha256:4135ab6fb51c18ca7972e822e9445d8e8fa9238e251e9f2c84e6845dd12836a3"},
+]
 omegaconf = [
     {file = "omegaconf-2.0.2-py3-none-any.whl", hash = "sha256:3892d6a6848e1f54869d6ea3720f7208e4bb4276774f97dbb899fb540ac84506"},
     {file = "omegaconf-2.0.2.tar.gz", hash = "sha256:dede7746b3dc18c5670dcec4ce283593d229a055a1c9cf089e2663545396fba0"},
@@ -1218,6 +1263,9 @@ openmesh = [
     {file = "openmesh-1.1.4.post18-cp35-cp35m-macosx_10_13_x86_64.whl", hash = "sha256:2aa05f39ed498b4c78eb8adc6bb131506e278eec7aac3b7cfdfbb1f0a6900d81"},
     {file = "openmesh-1.1.4.post18-cp37-cp37m-win_amd64.whl", hash = "sha256:895e6fdd23b4bc44e5989ae6c820205a9e913e48dd589a90c6a48ee810771156"},
     {file = "openmesh-1.1.4.post18.tar.gz", hash = "sha256:1ae2b83086c63859ae53dcb85664ab9b6df4245acb7986377c230524abe9169d"},
+]
+outdated = [
+    {file = "outdated-0.2.0.tar.gz", hash = "sha256:bcb145e0e372ba467e998c327d3d1ba72a134b0d5a729749729df6c6244ce643"},
 ]
 packaging = [
     {file = "packaging-20.4-py2.py3-none-any.whl", hash = "sha256:998416ba6962ae7fbd6596850b80e17859a5753ba17c32284f67bfff33784181"},

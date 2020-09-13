@@ -1,0 +1,9 @@
+# @package _group_
+_target_: examples.datasets.ogbn_arxiv.OgbnArxivDataset
+params:
+  dataset:
+    _target_: ogb.nodeproppred.PygNodePropPredDataset
+    params:
+      name: 'ogbn-arxiv'
+      transform:
+        - _target_: torch_geometric.transforms.ToSparseTensor
