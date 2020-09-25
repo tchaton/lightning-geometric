@@ -1,6 +1,6 @@
 # Pytorch Geometric in Pytorch Lightning
 
-### Setup
+### Setup on MacOs. Please, adapt to others OS :)
 
 ```python
 brew install cmake

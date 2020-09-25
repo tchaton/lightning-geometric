@@ -11,6 +11,7 @@ import pytorch_lightning as pl
 from examples.config import *
 from examples.datasets import *
 from examples.models import *
+from examples.utils.loggers import initialize_loggers
 from examples.utils import attach_step_and_epoch_functions
 
 
@@ -25,13 +26,15 @@ def my_app(cfg: DictConfig) -> None:
         **data_module.hyper_parameters,
     )
 
+    loggers = initialize_loggers(cfg, **model.config, **data_module.config)
+
     checkpoint_callback = pl.callbacks.ModelCheckpoint(filepath=None, save_last=True)
 
     gpus = list(range(torch.cuda.device_count())) if torch.cuda.is_available() else None
 
     resume_from_checkpoint = None
 
-    trainer = instantiate(cfg.trainer, gpus=gpus)
+    trainer = instantiate(cfg.trainer, gpus=gpus, logger=loggers)
 
     attach_step_and_epoch_functions(trainer, model, data_module)
 

@@ -33,6 +33,10 @@ class BaseDataset(LightningDataModule):
         self._num_workers = 2
         self._hyper_parameters = {}
 
+    @property
+    def config(self):
+        return {"dataset_config": {}}
+
     def __instantiate_transform(self, kwargs):
         self._pre_transform = None
         self._transform = None

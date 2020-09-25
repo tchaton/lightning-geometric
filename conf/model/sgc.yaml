@@ -1,4 +1,5 @@
 # @package _group_
+name: 'sgc'
 _target_: examples.models.sgc.SGConvNet
 params:
   hidden_channels: 64

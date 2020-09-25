@@ -1,4 +1,5 @@
 # @package _group_
+name: 'pna'
 _target_: examples.models.pna.PNAConvNet
 params:
   num_layers: 4

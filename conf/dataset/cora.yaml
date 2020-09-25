@@ -1,4 +1,5 @@
 # @package _group_
+name: 'cora'
 _target_: examples.datasets.cora.CoraNeighborSamplerDataset
 params:
   num_layers: ${model.params.num_layers}

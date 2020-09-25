@@ -1,0 +1,18 @@
+# @package _group_
+loggers:
+  - name: 'wandb'
+    person: 'thomas-chaton'
+    _target_: examples.utils.loggers.initialize_WandbLogger
+    params:
+      name: ${name}
+      save_dir: ''
+      offline: False
+      id: ${now:%Y-%m-%d}_${now:%H-%M-%S}
+      anonymous: False
+      version: ''
+      project: ${dataset.name}
+      config: ${notes}
+      log_model: ${log}
+      experiment:
+      entity: 'thomas-chaton'
+      group: ${model.name}

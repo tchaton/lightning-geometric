@@ -1,6 +1,6 @@
 # @package _group_
 optimizers:
-  - name: 'adam'
+  - name: 'default'
     _target_: torch.optim.Adam
     params:
       lr: 0.02

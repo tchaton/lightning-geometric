@@ -1,4 +1,5 @@
 # @package _group_
+name: 'reddit'
 _target_: examples.datasets.reddit.RedditNeighborSamplerDataset
 params:
   sizes: [25, 10]

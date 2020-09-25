@@ -1,2 +1,3 @@
 # @package _group_
+name: 'zinc'
 _target_: examples.datasets.zinc.ZINCDataset

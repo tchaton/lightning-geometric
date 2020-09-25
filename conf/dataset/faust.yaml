@@ -1,4 +1,5 @@
 # @package _group_
+name: 'faust'
 _target_: examples.datasets.faust.FAUSTDataset
 params:
   pre_transform:

@@ -13,14 +13,28 @@ class BaseModel(pl.LightningModule):
     def __init__(self, *args, **kwargs):
         super().__init__()
 
-        optimizers_conf = self._validate_optimizers_conf(kwargs["optimizers"])
+        self._optimizers_conf = self._validate_optimizers_conf(kwargs["optimizers"])
         self._optimizer_name = None
-        if len(optimizers_conf) == 1:
-            self._optimizer_name = optimizers_conf[0]["name"]
+        if len(self._optimizers_conf) == 1:
+            self._optimizer_name = self._optimizers_conf[0]["name"]
         self._init_optim = partial(
             self._init_optim,
-            optimizers_conf=optimizers_conf,
+            optimizers_conf=self._optimizers_conf,
         )
+
+    @property
+    def config(self):
+        config = {"model_config": {}}
+        config["model_config"].update(
+            {k: v for k, v in self.hparams.items() if isinstance(v, (int, float, str))}
+        )
+        for optim_conf in self._optimizers_conf:
+            optim_dict = {f"optim_{optim_conf.name}_class": optim_conf._target_}
+            for (param_name, param_value) in optim_conf.params.items():
+                optim_dict[f"optim_{optim_conf.name}_{param_name}"] = param_value
+
+            config["model_config"].update(optim_dict)
+        return config
 
     @staticmethod
     def _validate_optimizers_conf(optimizers):

@@ -1,2 +1,3 @@
 # @package _group_
+name: 'ppi'
 _target_: examples.datasets.ppi.PPIDataset

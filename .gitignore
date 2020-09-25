@@ -33,3 +33,4 @@ lightning_logs
 .tox
 .python-version
 .venv/*
+wandb

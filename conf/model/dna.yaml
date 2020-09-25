@@ -1,4 +1,5 @@
 # @package _group_
+name: 'dna'
 _target_: examples.models.dna.DNAConvNet
 params:
   hidden_channels: 128

@@ -1,4 +1,5 @@
 # @package _group_
+name: 'ogbn_arxiv'
 _target_: examples.datasets.ogbn_arxiv.OgbnArxivDataset
 params:
   dataset:
