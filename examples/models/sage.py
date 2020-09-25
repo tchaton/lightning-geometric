@@ -5,7 +5,7 @@ from torch import nn
 import torch.nn.functional as F
 from torch_geometric.nn import SAGEConv
 import pytorch_lightning as pl
-from examples.models.base_model import BaseModel
+from examples.core.base_model import BaseModel
 
 
 class SAGEConvNet(BaseModel):
@@ -22,8 +22,8 @@ class SAGEConvNet(BaseModel):
             )
         self.convs.append(SAGEConv(kwargs["hidden_channels"], kwargs["num_classes"]))
 
-    def forward(self, x, adjs):
+    def forward(self, x, adjs, *args, **kwargs):
         for idx, conv in enumerate(self.convs):
             x = F.relu(conv(x, adjs[idx].edge_index))
             x = F.dropout(x, training=self.training)
-        return x
+        return x, 0

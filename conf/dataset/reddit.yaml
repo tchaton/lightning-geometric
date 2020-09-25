@@ -1,5 +1,13 @@
 # @package _group_
 name: 'reddit'
-_target_: examples.datasets.reddit.RedditNeighborSamplerDataset
+_target_: examples.datasets.reddit.RedditDataset
 params:
-  sizes: [25, 10]
+  num_edges: 25
+  num_layers: ${model.params.num_layers}
+  samplers:
+    - stage: 'train'
+      sampling: 'neighbor_sampler'
+    - stage: 'val'
+      sampling: 'neighbor_sampler'
+    - stage: 'test'
+      sampling: 'neighbor_sampler'

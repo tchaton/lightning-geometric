@@ -10,9 +10,17 @@ from pytorch_lightning import LightningDataModule
 import torch_geometric
 from torch_geometric.datasets import PPI
 import torch_geometric.transforms as T
+from examples.core.base_dataset_samplers import BaseDatasetSampler
 
 
-class BaseDataset(LightningDataModule):
+def del_attr(kwargs, name):
+    try:
+        del kwargs[name]
+    except:
+        pass
+
+
+class BaseDataset(BaseDatasetSampler, LightningDataModule):
 
     NAME = ...
 
@@ -22,16 +30,27 @@ class BaseDataset(LightningDataModule):
         **kwargs,
     ):
         self.__instantiate_transform(kwargs)
-        super().__init__(*args, **kwargs)
+        BaseDatasetSampler.__init__(self, *args, **kwargs)
+        self.clean_kwargs(kwargs)
+        LightningDataModule.__init__(self, *args, **kwargs)
 
         self.dataset_train = None
         self.dataset_val = None
         self.dataset_test = None
-        self.follow_batch = []
 
         self._seed = 42
         self._num_workers = 2
+        self._shuffle = True
+        self._drop_last = False
+        self._pin_memory = True
+        self._follow_batch = []
+
         self._hyper_parameters = {}
+
+    def clean_kwargs(self, kwargs):
+        del_attr(kwargs, "samplers")
+        del_attr(kwargs, "num_edges")
+        del_attr(kwargs, "num_layers")
 
     @property
     def config(self):
@@ -64,45 +83,3 @@ class BaseDataset(LightningDataModule):
 
     def prepare_data(self):
         pass
-
-    def train_dataloader(self, batch_size=1, transforms=None):
-        loader = DataLoader(
-            self.dataset_train,
-            batch_size=batch_size
-            if batch_size <= len(self.dataset_train)
-            else len(self.dataset_train),
-            shuffle=True,
-            num_workers=self._num_workers,
-            drop_last=True,
-            pin_memory=True,
-            follow_batch=self.follow_batch,
-        )
-        return loader
-
-    def val_dataloader(self, batch_size=1, transforms=None):
-        loader = DataLoader(
-            self.dataset_val,
-            batch_size=batch_size
-            if batch_size <= len(self.dataset_val)
-            else len(self.dataset_val),
-            shuffle=False,
-            num_workers=self._num_workers,
-            drop_last=True,
-            pin_memory=True,
-            follow_batch=self.follow_batch,
-        )
-        return loader
-
-    def test_dataloader(self, batch_size=1, transforms=None):
-        loader = DataLoader(
-            self.dataset_test,
-            batch_size=batch_size
-            if batch_size <= len(self.dataset_test)
-            else len(self.dataset_test),
-            shuffle=False,
-            num_workers=self._num_workers,
-            drop_last=True,
-            pin_memory=True,
-            follow_batch=self.follow_batch,
-        )
-        return loader

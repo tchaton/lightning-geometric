@@ -10,7 +10,7 @@ from pytorch_lightning.loggers import WandbLogger
 
 def initialize_WandbLogger(*args, **kwargs):
 
-    keys = [k for k in inspect.signature(WandbLogger.__init__).parameters.keys()][1:]
+    keys = [k for k in inspect.signature(WandbLogger.__init__).parameters.keys()][1:-1]
     wandb_dict = {k: kwargs.get(k) for k in keys}
 
     try:

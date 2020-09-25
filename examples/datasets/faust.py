@@ -10,11 +10,12 @@ from torch_geometric.datasets import FAUST
 import torch.nn.functional as F
 import pytorch_lightning as pl
 from sklearn.metrics import f1_score
+from examples.core.base_dataset import BaseDataset
+from examples.tasks.classification import ClassificationDatasetHook
+from examples.core.base_dataset import BaseDataset
 
-from examples.datasets.base_dataset import BaseDataset
 
-
-class FAUSTDataset(BaseDataset):
+class FAUSTDataset(BaseDataset, ClassificationDatasetHook):
 
     NAME = "FAUST"
 

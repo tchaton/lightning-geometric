@@ -11,3 +11,8 @@ params:
     - _target_: torch_geometric.transforms.Cartesian
   test_transform:
     - _target_: torch_geometric.transforms.Cartesian
+  samplers:
+    - stage: 'train'
+      sampling: 'dataloader'
+    - stage: 'val'
+      sampling: 'dataloader'

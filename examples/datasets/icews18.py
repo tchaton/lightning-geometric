@@ -11,7 +11,7 @@ import torch.nn.functional as F
 import pytorch_lightning as pl
 from sklearn.metrics import f1_score
 
-from examples.datasets.base_dataset import BaseDataset
+from examples.core.base_dataset import BaseDataset
 
 
 class ICEWS18Dataset(BaseDataset):

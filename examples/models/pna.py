@@ -8,7 +8,7 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau
 import torch.nn.functional as F
 from torch_geometric.nn import PNAConv, BatchNorm, global_add_pool
 import pytorch_lightning as pl
-from examples.models.base_model import BaseModel
+from examples.core.base_model import BaseModel
 
 
 class PNAConvNet(BaseModel):

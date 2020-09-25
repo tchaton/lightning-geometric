@@ -5,7 +5,7 @@ from torch import nn
 import torch.nn.functional as F
 from torch_geometric.nn import TAGConv
 import pytorch_lightning as pl
-from examples.models.base_model import BaseModel
+from examples.core.base_model import BaseModel
 
 
 class TAGConvNet(BaseModel):
