@@ -13,11 +13,13 @@ ROOT_DIR = dirname(dirname(dirname(__file__)))
 
 
 def check_jittable(model, data_module):
-    torch.jit.save(model.to_torchscript(), "model.pt")
-    model = torch.jit.load("model.pt")
+    path2model = os.path.join(os.getcwd(), "model.pt")
+    torch.jit.save(model.to_torchscript(), path2model)
+    model = torch.jit.load(path2model)
     data_module.forward = model.forward
     batch = get_single_batch(data_module)
     _ = data_module.step(get_single_batch(data_module), None, "test")
+    print("Check model is jittable complete.")
 
 
 def instantiate_model(cfg, data_module):

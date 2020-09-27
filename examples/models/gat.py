@@ -21,7 +21,8 @@ class GATConvNet(BaseModel):
         self.conv3 = GATConv(4 * 256, kwargs["num_classes"], heads=6, concat=False)
         self.lin3 = torch.nn.Linear(4 * 256, kwargs["num_classes"])
 
-    def forward(self, x, edge_index):
-        x = F.elu(self.conv1(x, edge_index) + self.lin1(x))
-        x = F.elu(self.conv2(x, edge_index) + self.lin2(x))
-        return self.conv3(x, edge_index) + self.lin3(x)
+    def forward(self, batch):
+        x = batch.x
+        x = F.elu(self.conv1(x, batch.edge_index[0]) + self.lin1(x))
+        x = F.elu(self.conv2(x, batch.edge_index[1]) + self.lin2(x))
+        return self.conv3(x, batch.edge_index[2]) + self.lin3(x)

@@ -27,8 +27,9 @@ class SGConvNet(BaseModel):
             )
         self.convs.append(SGConv(kwargs["hidden_channels"], kwargs["num_classes"]))
 
-    def forward(self, x, adjs):
+    def forward(self, batch):
+        x = batch.x
         for idx, conv in enumerate(self.convs):
-            x = F.relu(conv(x, adjs[idx].edge_index))
+            x = F.relu(conv(x, batch.edge_index[idx]))
             x = F.dropout(x, training=self.training)
-        return x
+        return x, 0
