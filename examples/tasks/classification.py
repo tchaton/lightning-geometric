@@ -8,7 +8,7 @@ from pytorch_lightning import LightningDataModule
 from pytorch_lightning import metrics
 import pytorch_lightning as pl
 import torch_geometric
-from argparse import Namespace
+from collections import namedtuple
 from torch_geometric.data import DataLoader
 from torch_geometric.datasets import Planetoid
 from torch_geometric.data import NeighborSampler
@@ -26,30 +26,28 @@ class ClassificationDatasetHook:
         for sampler in self._samplers:
             if sampler.stage == stage:
                 sampling = sampler.sampling
-        x, edge_index_or_adjs, edge_attr_or_adjs_atrr, targets = self.prepare_batch(
-            batch, batch_nb, stage, sampling
-        )
-        logits, internal_losses = self.forward(
-            x, edge_index_or_adjs, edge_attr_or_adjs_atrr
-        )
+        batch_ntuple = self.prepare_batch(batch, batch_nb, stage, sampling)
+        logits, internal_losses = self.forward(batch_ntuple)
         if sampling == SAMPLING.DataLoader.value:
             logits = logits[batch[f"{stage}_mask"]]
         preds = F.log_softmax(logits, -1)
-        loss = F.nll_loss(preds, targets) + internal_losses
-        return loss, preds, targets
+        loss = F.nll_loss(preds, batch_ntuple.targets) + internal_losses
+        return loss, preds, batch_ntuple.targets
 
     def prepare_batch(self, batch, batch_nb, stage, sampling):
+        Batch = namedtuple("Batch", ["x", "edge_index", "targets"])
         if sampling == SAMPLING.NeighborSampler.value:
-            return self.data.x[batch[1]], batch[2], None, self.data.y[batch[1]]
+            return Batch(
+                self.data.x[batch[1]],
+                [e.edge_index for e in batch[2]],
+                self.data.y[batch[1]],
+            )
 
         elif sampling == SAMPLING.DataLoader.value:
             stage_mask = batch[f"{stage}_mask"]
             targets = batch.y[stage_mask]
-            adjs = [
-                Namespace(edge_index=batch.edge_index) for _ in range(self._num_layers)
-            ]
-            return batch.x, adjs, None, targets
-
+            edge_index = [batch.edge_index.long() for _ in range(self._num_layers)]
+            return Batch(batch.x, edge_index, targets)
         else:
             raise Exception("Not defined")
 

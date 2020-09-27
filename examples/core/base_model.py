@@ -4,8 +4,9 @@ from functools import partial
 from hydra.utils import instantiate, get_class
 import torch
 from torch import nn
+from torch.nn import Sequential, ModuleDict, ModuleList
 import torch.nn.functional as F
-from torch_geometric.nn import SAGEConv
+from torch_geometric.nn import SAGEConv, MessagePassing
 import pytorch_lightning as pl
 
 
@@ -80,3 +81,15 @@ class BaseModel(pl.LightningModule):
             raise Exception(
                 "Multiple optimizers are defined. Please, override configure_optimizers function"
             )
+
+    def _convert_to_jittable(self, module):
+        for key, m in module._modules.items():
+            if isinstance(m, MessagePassing):
+                module._modules[key] = m.jittable()
+            else:
+                self._convert_to_jittable(m)
+        return module
+
+    def convert_to_jittable(self):
+        for key, m in self._modules.items():
+            self._modules[key] = self._convert_to_jittable(m)

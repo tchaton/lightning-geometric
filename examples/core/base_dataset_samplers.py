@@ -35,7 +35,6 @@ class BaseDatasetSampler:
 
         self._num_edges = kwargs.get("num_edges")
         self._num_layers = kwargs.get("num_layers")
-        breakpoint()
         if (self._num_edges is not None) and (self._num_layers is not None):
             self._sizes = [self._num_edges, self._num_layers]
 

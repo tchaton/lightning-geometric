@@ -20,11 +20,13 @@ def my_app(cfg: DictConfig) -> None:
     print(OmegaConf.to_yaml(cfg))
 
     data_module = instantiate(cfg.dataset)
-    model = instantiate(
+    model: pl.LightningModule = instantiate(
         cfg.model,
         optimizers=cfg.optimizers.optimizers,
         **data_module.hyper_parameters,
     )
+
+    model.convert_to_jittable()
 
     attach_step_and_epoch_functions(model, data_module)
 
@@ -40,6 +42,9 @@ def my_app(cfg: DictConfig) -> None:
 
     trainer.fit(model, data_module)
     print("Training complete.")
+    breakpoint()
+
+    torch.jit.save(model.to_torchscript(), "model.pt")
 
 
 if __name__ == "__main__":
