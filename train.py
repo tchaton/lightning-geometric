@@ -12,25 +12,19 @@ from examples.config import *
 from examples.datasets import *
 from examples.core import *
 from examples.utils.loggers import initialize_loggers
-from examples.utils import attach_step_and_epoch_functions
+from examples.utils import instantiate_model, check_jittable
 
 
 @hydra.main(config_path="conf", config_name="config")
 def my_app(cfg: DictConfig) -> None:
     print(OmegaConf.to_yaml(cfg))
 
-    data_module = instantiate(cfg.dataset)
-    model: pl.LightningModule = instantiate(
-        cfg.model,
-        optimizers=cfg.optimizers.optimizers,
-        **data_module.hyper_parameters,
+    data_module: pl.LightningDataModule = instantiate(cfg.dataset)
+    model: pl.LightningModule = instantiate_model(cfg, data_module)
+
+    loggers: List[pl.callbacks.Callback] = initialize_loggers(
+        cfg, **model.config, **data_module.config
     )
-
-    model.convert_to_jittable()
-
-    attach_step_and_epoch_functions(model, data_module)
-
-    loggers = initialize_loggers(cfg, **model.config, **data_module.config)
 
     checkpoint_callback = pl.callbacks.ModelCheckpoint(filepath=None, save_last=True)
 
@@ -38,13 +32,12 @@ def my_app(cfg: DictConfig) -> None:
 
     resume_from_checkpoint = None
 
-    trainer = instantiate(cfg.trainer, gpus=gpus, logger=loggers)
+    trainer: pl.Trainer = instantiate(cfg.trainer, gpus=gpus, logger=loggers)
 
     trainer.fit(model, data_module)
     print("Training complete.")
-    breakpoint()
 
-    torch.jit.save(model.to_torchscript(), "model.pt")
+    check_jittable(model, data_module)
 
 
 if __name__ == "__main__":

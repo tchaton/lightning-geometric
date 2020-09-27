@@ -14,6 +14,7 @@ from torch_geometric.datasets import Planetoid
 from torch_geometric.data import NeighborSampler
 import torch_geometric.transforms as T
 from examples.core.base_dataset_samplers import SAMPLING
+from examples.core.typing import SparseBatch, TensorBatch
 
 
 class ClassificationDatasetHook:
@@ -26,13 +27,13 @@ class ClassificationDatasetHook:
         for sampler in self._samplers:
             if sampler.stage == stage:
                 sampling = sampler.sampling
-        batch_ntuple = self.prepare_batch(batch, batch_nb, stage, sampling)
-        logits, internal_losses = self.forward(batch_ntuple)
+        typed_batch = self.prepare_batch(batch, batch_nb, stage, sampling)
+        logits, internal_losses = self.forward(typed_batch)
         if sampling == SAMPLING.DataLoader.value:
             logits = logits[batch[f"{stage}_mask"]]
         preds = F.log_softmax(logits, -1)
-        loss = F.nll_loss(preds, batch_ntuple.targets) + internal_losses
-        return loss, preds, batch_ntuple.targets
+        loss = F.nll_loss(preds, typed_batch.targets) + internal_losses
+        return loss, preds, typed_batch.targets
 
     def prepare_batch(self, batch, batch_nb, stage, sampling):
         Batch = namedtuple("Batch", ["x", "edge_index", "targets"])

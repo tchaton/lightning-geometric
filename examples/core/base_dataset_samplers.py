@@ -24,9 +24,13 @@ class BaseDatasetSampler:
                 if sampling == SAMPLING.DataLoader.value:
                     func = partial(self.create_dataloader, stage=stage)
                     func.__code__ = self.create_dataloader.__code__
+                    setattr(self, f"{stage}_loader_type", SAMPLING.DataLoader.value)
                 elif sampling == SAMPLING.NeighborSampler.value:
                     func = partial(self.create_neighbor_sampler, stage=stage)
                     func.__code__ = self.create_neighbor_sampler.__code__
+                    setattr(
+                        self, f"{stage}_loader_type", SAMPLING.NeighborSampler.value
+                    )
                 else:
                     raise Exception(
                         f"Strategy should be within {[v.value for v in SAMPLING]}"

@@ -8,6 +8,7 @@ from torch.nn import Sequential, ModuleDict, ModuleList
 import torch.nn.functional as F
 from torch_geometric.nn import SAGEConv, MessagePassing
 import pytorch_lightning as pl
+from examples.core.typing import SparseBatch, TensorBatch
 
 
 class BaseModel(pl.LightningModule):
@@ -93,3 +94,11 @@ class BaseModel(pl.LightningModule):
     def convert_to_jittable(self):
         for key, m in self._modules.items():
             self._modules[key] = self._convert_to_jittable(m)
+
+    @torch.jit._overload_method
+    def forward(self, batch: SparseBatch):
+        pass
+
+    @torch.jit._overload_method
+    def forward(self, batch: TensorBatch):
+        pass
