@@ -20,10 +20,11 @@ class AGNNConvNet(BaseModel):
             self.convs.append(AGNNConv(requires_grad=True))
         self.mlp_out = torch.nn.Linear(16, kwargs["num_classes"])
 
-    def forward(self, x, adjs):
+    def forward(self, batch):
+        x = batch.x
         x = F.dropout(x, training=self.training)
         x = F.relu(self.mlp_in(x))
         for idx, conv in enumerate(self.convs):
-            x = conv(x, adjs[idx].edge_index)
+            x = conv(x, batch.edge_index[idx])
         x = F.dropout(x, training=self.training)
-        return self.mlp_out(x)
+        return self.mlp_out(x), 0
