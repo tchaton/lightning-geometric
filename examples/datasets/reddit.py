@@ -12,10 +12,10 @@ from torch_geometric.datasets import Reddit
 from torch_geometric.data import NeighborSampler
 import torch_geometric.transforms as T
 from examples.core.base_dataset import BaseDataset
-from examples.tasks.classification import ClassificationDatasetHook
+from examples.tasks.classification import CategoricalDatasetHook
 
 
-class RedditDataset(BaseDataset, ClassificationDatasetHook):
+class RedditDataset(BaseDataset, CategoricalDatasetHook):
 
     NAME = "Reddit"
 

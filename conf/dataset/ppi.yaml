@@ -1,3 +1,12 @@
 # @package _group_
 name: 'ppi'
 _target_: examples.datasets.ppi.PPIDataset
+params:
+  num_layers: ${model.params.num_layers}
+  samplers:
+    - stage: 'train'
+      sampling: 'dataloader'
+    - stage: 'val'
+      sampling: 'dataloader'
+    - stage: 'test'
+      sampling: 'dataloader'

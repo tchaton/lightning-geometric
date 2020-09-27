@@ -4,10 +4,11 @@ _target_: examples.datasets.reddit.RedditDataset
 params:
   num_edges: 25
   num_layers: ${model.params.num_layers}
+  threshold: 0.5
   samplers:
     - stage: 'train'
       sampling: 'neighbor_sampler'
     - stage: 'val'
-      sampling: 'neighbor_sampler'
+      sampling: 'dataloader'
     - stage: 'test'
-      sampling: 'neighbor_sampler'
+      sampling: 'dataloader'

@@ -17,7 +17,7 @@ from examples.core.base_dataset_samplers import SAMPLING
 from examples.core.typing import SparseBatch, TensorBatch
 
 
-class ClassificationDatasetHook:
+class ClassificationBaseDatasetHook:
     def __init__(self):
 
         self._acc_meter = metrics.Accuracy(self.num_classes)
@@ -31,8 +31,7 @@ class ClassificationDatasetHook:
         logits, internal_losses = self.forward(typed_batch)
         if sampling == SAMPLING.DataLoader.value:
             logits = logits[batch[f"{stage}_mask"]]
-        preds = F.log_softmax(logits, -1)
-        loss = F.nll_loss(preds, targets) + internal_losses
+        loss, preds = self.compute_loss(logits, targets, internal_losses)
         return loss, preds, targets
 
     def prepare_batch(self, batch, batch_nb, stage, sampling):
@@ -62,7 +61,7 @@ class ClassificationDatasetHook:
 
     def _test_step(self, batch, batch_nb, stage=None):
         loss, preds, targets = self.step(batch, batch_nb, stage)
-        acc = self._acc_meter(preds, targets)
+        acc = self.compute_acc(preds, targets)
         result = pl.EvalResult(checkpoint_on=loss)
         result.log(f"{stage}_loss", loss, prog_bar=True)
         result.log(f"{stage}_acc", acc, prog_bar=True)
@@ -73,3 +72,26 @@ class ClassificationDatasetHook:
 
     def test_step(self, batch, batch_nb):
         return self._test_step(batch, batch_nb, stage="test")
+
+
+class CategoricalDatasetHook(ClassificationBaseDatasetHook):
+    def compute_loss(self, logits, targets, internal_losses):
+        preds = F.log_softmax(logits, -1)
+        loss = F.nll_loss(preds, targets) + internal_losses
+        return loss, preds
+
+    def compute_acc(self, preds, targets):
+        return self._acc_meter(preds, targets)
+
+
+class BinaryDatasetHook(ClassificationBaseDatasetHook):
+
+    loss_op = torch.nn.BCEWithLogitsLoss()
+
+    def compute_loss(self, logits, targets, internal_losses):
+        preds = F.log_softmax(logits, -1)
+        loss = self.loss_op(preds, targets) + internal_losses
+        return loss, preds
+
+    def compute_acc(self, preds, targets):
+        return self._acc_meter((preds > self._threshold), targets.flatten())
