@@ -15,9 +15,9 @@ ROOT_DIR = dirname(dirname(dirname(__file__)))
 def check_jittable(model, data_module):
     torch.jit.save(model.to_torchscript(), "model.pt")
     model = torch.jit.load("model.pt")
-    print(model)
+    data_module.forward = model.forward
     batch = get_single_batch(data_module)
-    print(model(batch))
+    _ = data_module.step(get_single_batch(data_module), None, "test")
 
 
 def instantiate_model(cfg, data_module):

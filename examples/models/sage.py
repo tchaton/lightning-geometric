@@ -1,12 +1,8 @@
-import os.path as osp
-import torch
+from typing import *
 from torch import nn
 from typing import *
-from collections import namedtuple
 import torch.nn.functional as F
-from torch_sparse import SparseTensor
 from torch_geometric.nn import SAGEConv
-import pytorch_lightning as pl
 from examples.core.base_model import BaseModel
 
 

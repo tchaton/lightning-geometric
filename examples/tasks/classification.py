@@ -27,20 +27,22 @@ class ClassificationDatasetHook:
         for sampler in self._samplers:
             if sampler.stage == stage:
                 sampling = sampler.sampling
-        typed_batch = self.prepare_batch(batch, batch_nb, stage, sampling)
+        typed_batch, targets = self.prepare_batch(batch, batch_nb, stage, sampling)
         logits, internal_losses = self.forward(typed_batch)
         if sampling == SAMPLING.DataLoader.value:
             logits = logits[batch[f"{stage}_mask"]]
         preds = F.log_softmax(logits, -1)
-        loss = F.nll_loss(preds, typed_batch.targets) + internal_losses
-        return loss, preds, typed_batch.targets
+        loss = F.nll_loss(preds, targets) + internal_losses
+        return loss, preds, targets
 
     def prepare_batch(self, batch, batch_nb, stage, sampling):
-        Batch = namedtuple("Batch", ["x", "edge_index", "targets"])
+        Batch = namedtuple("Batch", ["x", "edge_index"])
         if sampling == SAMPLING.NeighborSampler.value:
-            return Batch(
-                self.data.x[batch[1]],
-                [e.edge_index for e in batch[2]],
+            return (
+                Batch(
+                    self.data.x[batch[1]],
+                    [e.edge_index for e in batch[2]],
+                ),
                 self.data.y[batch[1]],
             )
 
@@ -48,7 +50,7 @@ class ClassificationDatasetHook:
             stage_mask = batch[f"{stage}_mask"]
             targets = batch.y[stage_mask]
             edge_index = [batch.edge_index.long() for _ in range(self._num_layers)]
-            return Batch(batch.x, edge_index, targets)
+            return Batch(batch.x, edge_index), targets
         else:
             raise Exception("Not defined")
 
