@@ -69,9 +69,9 @@ class ZINCDataset(BaseDataset):
             osp.dirname(osp.realpath(__file__)), "..", "..", "data", self.NAME
         )
 
-        self.dataset_train = ZINC(path, subset=True, split="train")
-        self.dataset_val = ZINC(path, subset=True, split="val")
-        self.dataset_test = ZINC(path, subset=True, split="test")
+        self.train_dataset = ZINC(path, subset=True, split="train")
+        self.val_dateset = ZINC(path, subset=True, split="val")
+        self.test_dataset = ZINC(path, subset=True, split="test")
 
     def training_step(self, batch, batch_nb):
         out = self.forward(batch.x, batch.edge_index, batch.edge_attr, batch.batch)

@@ -14,8 +14,13 @@ poetry install
 ### PRINCIPAL CMD
 
 ```python
-python train.py model={{MODEL}} dataset={{DATASET}}
+python train.py model={{MODEL}} dataset={{DATASET}} loggers={{LOGGERS}} log={{LOG}} notes={{NOTES}} name={{NAME}}
 ```
+
+- `LOGGERS`: Configuration file to log to Wandb, currently using mine as `thomas-chaton`
+- `LOG`: Wheter to log training to wandb
+- `NOTES`: A note associated to the training
+- `NAME`: Training name appearing on Wandb.
 
 ### SUPPORTED COMBINAISONS
 
