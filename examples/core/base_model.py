@@ -1,5 +1,5 @@
 import os.path as osp
-from omegaconf import OmegaConf
+from omegaconf import OmegaConf, DictConfig, ListConfig
 from functools import partial
 from hydra.utils import instantiate, get_class
 import torch
@@ -102,3 +102,18 @@ class BaseModel(pl.LightningModule):
     @torch.jit._overload_method
     def forward(self, batch: TensorBatch):
         pass
+
+    def sanetize_kwargs(self, kwargs):
+        def _sanetize_kwargs(value):
+            if isinstance(value, (DictConfig, ListConfig)):
+                return OmegaConf.to_container(value)
+            elif isinstance(value, list):
+                return [_sanetize_kwargs(v) for v in value]
+            elif isinstance(value, dict):
+                return {k: _sanetize_kwargs(v) for k, v in value.items()}
+            else:
+                return value
+
+        for key, value in kwargs.items():
+            kwargs[key] = _sanetize_kwargs(value)
+        return kwargs

@@ -1,5 +1,5 @@
 import os.path as osp
-
+from omegaconf import OmegaConf
 import torch
 from torch import nn
 from torch.nn import ModuleList, Embedding
@@ -16,6 +16,8 @@ class PNAConvNet(BaseModel):
         super().__init__(*args, **kwargs)
 
         self.save_hyperparameters()
+
+        kwargs = self.sanetize_kwargs(kwargs)
 
         self.node_emb = Embedding(kwargs["node_vocab"], kwargs["node_dim"])
         self.edge_emb = Embedding(kwargs["edge_vocab"], kwargs["edge_dim"])
@@ -48,11 +50,12 @@ class PNAConvNet(BaseModel):
 
     def forward(self, batch):
         batch_idx = batch.batch
-        x = batch.x
-        edge_attr = batch.edge_attr
-
-        x = self.node_emb(x.squeeze())
-        edge_attr = self.edge_emb(edge_attr)
+        x = self.node_emb(batch.x.squeeze())
+        edge_attr = (
+            self.edge_emb(batch.edge_attr)
+            if batch.edge_attr is not None
+            else torch.ones((x.shape[0], self.hparams["edge_dim"]))
+        )
 
         for idx, (conv, batch_norm) in enumerate(zip(self.convs, self.batch_norms)):
             edge_index = (
