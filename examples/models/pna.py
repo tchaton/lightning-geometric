@@ -50,18 +50,18 @@ class PNAConvNet(BaseModel):
 
     def forward(self, batch):
         batch_idx = batch.batch
+        edge_attr = batch.edge_attr
+
+        assert edge_attr is not None
+        assert batch_idx is not None
         x = self.node_emb(batch.x.squeeze())
-        edge_attr = (
-            self.edge_emb(batch.edge_attr)
-            if batch.edge_attr is not None
-            else torch.ones((x.shape[0], self.hparams["edge_dim"]))
-        )
+        edge_attr = self.edge_emb(edge_attr)
 
         for idx, (conv, batch_norm) in enumerate(zip(self.convs, self.batch_norms)):
             edge_index = (
-                batch.edge_index[idx]
-                if isinstance(batch.edge_index, list)
-                else batch.edge_index
+                batch.edge_index[0]
+                if len(batch.edge_index) == 1
+                else batch.edge_index[idx]
             )
             x = F.relu(batch_norm(conv(x, edge_index, edge_attr)))
 
