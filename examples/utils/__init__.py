@@ -29,7 +29,9 @@ def instantiate_model(cfg, data_module):
         optimizers=cfg.optimizers.optimizers,
         **data_module.hyper_parameters,
     )
-
+    if not cfg.jit:
+        attach_step_and_epoch_functions(model, data_module)
+        return model
     model_cls = re_compile_model(model, data_module)
     model = model_cls(
         **cfg_copy.model.params,
@@ -48,7 +50,7 @@ def re_compile_model(model, data_module):
     with open(join(ROOT_DIR, f"{path2model}.py")) as f:
         code = f.read()
     code = code.replace("batch)", f"batch:{batchType})")
-    code = "from examples.core.typing import SparseBatch, TensorBatch\n" + code
+    code = "from examples.core.typing import *\n" + code
     return class_from_module_repr(model.__class__.__name__, code)
 
 

@@ -10,6 +10,6 @@ params:
     - stage: 'train'
       sampling: 'neighbor_sampler'
     - stage: 'val'
-      sampling: 'dataloader'
+      sampling: 'neighbor_sampler'
     - stage: 'test'
-      sampling: 'dataloader'
+      sampling: 'neighbor_sampler'

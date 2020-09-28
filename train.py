@@ -37,7 +37,8 @@ def my_app(cfg: DictConfig) -> None:
     trainer.fit(model, data_module)
     print("Training complete.")
 
-    check_jittable(model, data_module)
+    if cfg.jit:
+        check_jittable(model, data_module)
 
 
 if __name__ == "__main__":

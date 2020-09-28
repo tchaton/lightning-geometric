@@ -46,13 +46,22 @@ class PNAConvNet(BaseModel):
             Linear(kwargs["hidden_channels"], kwargs["num_classes"]),
         )
 
-    def forward(self, x, edge_index, edge_attr, batch):
+    def forward(self, batch):
+        batch_idx = batch.batch
+        x = batch.x
+        edge_attr = batch.edge_attr
+
         x = self.node_emb(x.squeeze())
         edge_attr = self.edge_emb(edge_attr)
 
-        for conv, batch_norm in zip(self.convs, self.batch_norms):
+        for idx, (conv, batch_norm) in enumerate(zip(self.convs, self.batch_norms)):
+            edge_index = (
+                batch.edge_index[idx]
+                if isinstance(batch.edge_index, list)
+                else batch.edge_index
+            )
             x = F.relu(batch_norm(conv(x, edge_index, edge_attr)))
 
-        x = global_add_pool(x, batch)
+        x = global_add_pool(x, batch_idx)
 
-        return self.mlp(x)
+        return self.mlp(x), 0

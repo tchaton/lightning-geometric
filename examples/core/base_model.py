@@ -8,7 +8,7 @@ from torch.nn import Sequential, ModuleDict, ModuleList
 import torch.nn.functional as F
 from torch_geometric.nn import SAGEConv, MessagePassing
 import pytorch_lightning as pl
-from examples.core.typing import SparseBatch, TensorBatch
+from examples.core.typing import *
 
 
 class BaseModel(pl.LightningModule):

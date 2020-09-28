@@ -23,6 +23,11 @@ class SAGEConvNet(BaseModel):
     def forward(self, batch):
         x = batch.x
         for idx, conv in enumerate(self.convs):
-            x = F.relu(conv(x, batch.edge_index[idx]))
+            edge_index = (
+                batch.edge_index[0]
+                if len(batch.edge_index[idx]) == 1
+                else batch.edge_index[idx]
+            )
+            x = F.relu(conv(x, edge_index))
             x = F.dropout(x, training=self.training)
         return x, 0

@@ -1,3 +1,12 @@
 # @package _group_
 name: 'zinc'
 _target_: examples.datasets.zinc.ZINCDataset
+params:
+  num_layers: ${model.params.num_layers}
+  samplers:
+    - stage: 'train'
+      sampling: 'dataloader'
+    - stage: 'val'
+      sampling: 'dataloader'
+    - stage: 'test'
+      sampling: 'dataloader'

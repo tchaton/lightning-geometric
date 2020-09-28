@@ -9,12 +9,12 @@ import torch_geometric
 from torch_geometric.datasets import PPI
 import torch_geometric.transforms as T
 import pytorch_lightning as pl
-from examples.tasks.classification import BinaryDatasetHook
+from examples.tasks.classification import BinaryDatasetSteps
 
 from examples.core.base_dataset import BaseDataset
 
 
-class PPIDataset(BaseDataset, BinaryDatasetHook):
+class PPIDataset(BaseDataset, BinaryDatasetSteps):
 
     NAME = "PPI"
 

@@ -13,11 +13,11 @@ from torch_geometric.data import DataLoader
 from torch_geometric.datasets import Planetoid
 from torch_geometric.data import NeighborSampler
 import torch_geometric.transforms as T
-from examples.tasks.classification import CategoricalDatasetHook
+from examples.tasks.classification import CategoricalDatasetSteps
 from examples.core.base_dataset import BaseDataset
 
 
-class CoraDataset(BaseDataset, CategoricalDatasetHook):
+class CoraDataset(BaseDataset, CategoricalDatasetSteps):
 
     NAME = "cora"
 

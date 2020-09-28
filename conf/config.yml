@@ -8,3 +8,4 @@ defaults:
 notes:
 log:
 name:
+jit: True

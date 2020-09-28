@@ -15,66 +15,23 @@ from torch_geometric.data import NeighborSampler
 import torch_geometric.transforms as T
 from examples.core.base_dataset_samplers import SAMPLING
 from examples.core.typing import SparseBatch, TensorBatch
+from examples.tasks.bases import BaseDatasetSteps
 
 
-class ClassificationBaseDatasetHook:
-    def __init__(self):
-
+class BaseClassificationSteps(BaseDatasetSteps):
+    def __init__(self, *args, **kwargs):
+        super(BaseClassificationSteps, self).__init__(*args, **kwargs)
         self._acc_meter = metrics.Accuracy(self.num_classes)
 
-    def step(self, batch, batch_nb, stage):
-        sampling = None
-        for sampler in self._samplers:
-            if sampler.stage == stage:
-                sampling = sampler.sampling
-        typed_batch, targets = self.prepare_batch(batch, batch_nb, stage, sampling)
-        logits, internal_losses = self.forward(typed_batch)
-        if sampling == SAMPLING.DataLoader.value:
-            logits = logits[batch[f"{stage}_mask"]]
-        loss, preds = self.compute_loss(logits, targets, internal_losses)
-        return loss, preds, targets
-
-    def prepare_batch(self, batch, batch_nb, stage, sampling):
-        Batch = namedtuple("Batch", ["x", "edge_index"])
-        if sampling == SAMPLING.NeighborSampler.value:
-            return (
-                Batch(
-                    self.data.x[batch[1]],
-                    [e.edge_index for e in batch[2]],
-                ),
-                self.data.y[batch[1]],
-            )
-
-        elif sampling == SAMPLING.DataLoader.value:
-            stage_mask = batch[f"{stage}_mask"]
-            targets = batch.y[stage_mask]
-            edge_index = [batch.edge_index.long() for _ in range(self._num_layers)]
-            return Batch(batch.x, edge_index), targets
-        else:
-            raise Exception("Not defined")
-
-    def training_step(self, batch, batch_nb, sampling=None):
-        loss, _, _ = self.step(batch, batch_nb, "train")
-        result = pl.TrainResult(loss)
-        result.log("train_loss", loss, prog_bar=True)
-        return result
-
-    def _test_step(self, batch, batch_nb, stage=None):
-        loss, preds, targets = self.step(batch, batch_nb, stage)
+    def compute_result(self, loss, preds, targets, stage):
         acc = self.compute_acc(preds, targets)
         result = pl.EvalResult(checkpoint_on=loss)
         result.log(f"{stage}_loss", loss, prog_bar=True)
         result.log(f"{stage}_acc", acc, prog_bar=True)
         return result
 
-    def validation_step(self, batch, batch_nb):
-        return self._test_step(batch, batch_nb, stage="val")
 
-    def test_step(self, batch, batch_nb):
-        return self._test_step(batch, batch_nb, stage="test")
-
-
-class CategoricalDatasetHook(ClassificationBaseDatasetHook):
+class CategoricalDatasetSteps(BaseClassificationSteps):
     def compute_loss(self, logits, targets, internal_losses):
         preds = F.log_softmax(logits, -1)
         loss = F.nll_loss(preds, targets) + internal_losses
@@ -84,7 +41,7 @@ class CategoricalDatasetHook(ClassificationBaseDatasetHook):
         return self._acc_meter(preds, targets)
 
 
-class BinaryDatasetHook(ClassificationBaseDatasetHook):
+class BinaryDatasetSteps(BaseClassificationSteps):
 
     loss_op = torch.nn.BCEWithLogitsLoss()
 

@@ -71,6 +71,7 @@ class Config:
     log: bool = MISSING
     notes: str = MISSING
     name: str = MISSING
+    jit: bool = True
 
 
 cs = ConfigStore.instance()
