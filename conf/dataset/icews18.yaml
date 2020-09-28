@@ -8,3 +8,10 @@ params:
     - _target_: torch_geometric.nn.models.re_net.RENet.pre_transform
       params:
         seq_len: ${dataset.params.seq_len}
+  samplers:
+    - stage: 'train'
+      sampling: 'dataloader'
+    - stage: 'val'
+      sampling: 'dataloader'
+    - stage: 'test'
+      sampling: 'dataloader'

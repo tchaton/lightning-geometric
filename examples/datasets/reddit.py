@@ -28,7 +28,7 @@ class RedditDataset(BaseDataset, CategoricalDatasetSteps):
 
     @property
     def num_features(self):
-        return 602  # TODO Find a better way to infer it
+        return 602
 
     @property
     def num_classes(self):

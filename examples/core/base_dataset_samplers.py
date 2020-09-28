@@ -42,7 +42,7 @@ class BaseDatasetSampler:
         if (self._num_edges is not None) and (self._num_layers is not None):
             self._sizes = [self._num_edges, self._num_layers]
 
-    def create_dataloader(self, batch_size=1, transforms=None, stage=None):
+    def create_dataloader(self, batch_size=2, transforms=None, stage=None):
         try:
             dataset = getattr(self, f"{stage}_dataset")
         except:
@@ -57,7 +57,7 @@ class BaseDatasetSampler:
             follow_batch=self._follow_batch,
         )
 
-    def create_neighbor_sampler(self, batch_size=1, transforms=None, stage=None):
+    def create_neighbor_sampler(self, batch_size=2, transforms=None, stage=None):
         return NeighborSampler(
             self.data.edge_index,
             node_idx=getattr(self.data, f"{stage}_mask"),

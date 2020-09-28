@@ -33,7 +33,7 @@ class OgbnArxivDataset(BaseDataset):
 
     @property
     def num_features(self):
-        return 128  # TODO Find a better way to infer it
+        return 128
 
     @property
     def num_classes(self):

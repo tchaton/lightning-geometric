@@ -7,16 +7,19 @@ from torch.utils.data import DataLoader, random_split
 from pytorch_lightning import LightningDataModule
 import torch_geometric
 from torch_geometric.datasets import ICEWS18
+from collections import namedtuple
 import torch.nn.functional as F
 import pytorch_lightning as pl
 from sklearn.metrics import f1_score
 
 from examples.core.base_dataset import BaseDataset
+from examples.tasks.bases import BaseDatasetSteps
 
 
-class ICEWS18Dataset(BaseDataset):
+class ICEWS18Dataset(BaseDataset, BaseDatasetSteps):
 
     NAME = "ICEWS18"
+    BATCH_KEYS = ["h_obj", "h_obj_t", "h_sub", "h_sub_t", "obj", "rel", "sub", "t"]
 
     def __init__(
         self,
@@ -36,7 +39,7 @@ class ICEWS18Dataset(BaseDataset):
 
     @property
     def num_rels(self):
-        return 256  # TODO Find a better way to infer it
+        return 256
 
     @property
     def num_nodes(self):
@@ -51,10 +54,15 @@ class ICEWS18Dataset(BaseDataset):
             osp.dirname(osp.realpath(__file__)), "..", "..", "data", self.NAME
         )
 
-        self.dataset_train = ICEWS18(
+        self.train_dataset = ICEWS18(
             path, split="train", pre_transform=self._pre_transform
         )
-        self.dataset_test = ICEWS18(path, split="test")
+        self.val_dataset = ICEWS18(path, split="val")
+        self.test_dataset = ICEWS18(path, split="test")
+
+    def prepare_batch(self, batch, batch_nb, stage, sampling):
+        Batch: TensorBatch = namedtuple("Batch", self.BATCH_KEYS)
+        return Batch(**{k: batch[k] for k in batch.keys}), batch.t
 
     def compute_loss(self, batch):
         log_prob_obj, log_prob_sub = self.forward(batch)
@@ -62,16 +70,3 @@ class ICEWS18Dataset(BaseDataset):
         loss_sub = F.nll_loss(log_prob_sub, batch.sub)
         loss = loss_obj + loss_sub
         return loss, log_prob_obj, log_prob_sub
-
-    def training_step(self, batch, batch_nb):
-        loss, _, _ = self.compute_loss(batch)
-        result = pl.TrainResult(loss)
-        result.log("train_loss", loss, prog_bar=True)
-        return result
-
-    def test_step(self, batch, batch_nb):
-        with torch.no_grad():
-            loss, log_prob_obj, log_prob_sub = self.compute_loss(batch)
-        result = pl.EvalResult(loss)
-        result.log("test_loss", loss)
-        return result

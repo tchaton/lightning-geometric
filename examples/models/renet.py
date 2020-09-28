@@ -22,5 +22,5 @@ class RENet(BaseModel):
         self.save_hyperparameters()
         self.model = instantiate(model)
 
-    def forward(self, x):
-        return self.model(x)
+    def forward(self, batch):
+        return self.model(batch)

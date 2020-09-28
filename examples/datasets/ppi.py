@@ -30,7 +30,7 @@ class PPIDataset(BaseDataset, BinaryDatasetSteps):
 
     @property
     def num_features(self):
-        return 50  # TODO Find a better way to infer it
+        return 50
 
     @property
     def num_classes(self):

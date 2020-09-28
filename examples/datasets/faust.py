@@ -37,7 +37,7 @@ class FAUSTDataset(BaseDataset, CategoricalDatasetSteps):
 
     @property
     def num_features(self):
-        return 3  # TODO Find a better way to infer it
+        return 3
 
     @property
     def num_classes(self):
