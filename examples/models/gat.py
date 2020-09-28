@@ -14,15 +14,47 @@ class GATConvNet(BaseModel):
 
         self.save_hyperparameters()
 
-        self.conv1 = GATConv(kwargs["num_features"], 256, heads=4)
-        self.lin1 = torch.nn.Linear(kwargs["num_features"], 4 * 256)
-        self.conv2 = GATConv(4 * 256, 256, heads=4)
-        self.lin2 = torch.nn.Linear(4 * 256, 4 * 256)
-        self.conv3 = GATConv(4 * 256, kwargs["num_classes"], heads=6, concat=False)
-        self.lin3 = torch.nn.Linear(4 * 256, kwargs["num_classes"])
+        assert kwargs["num_layers"] >= 2
+
+        self._num_layers = kwargs["num_layers"]
+
+        self.convs = nn.ModuleList()
+        self.lins = nn.ModuleList()
+
+        num_features = kwargs["num_features"]
+        hidden_channels = kwargs["hidden_channels"]
+        num_classes = kwargs["num_classes"]
+        heads = kwargs["heads"]
+
+        self.make_layers(num_features, hidden_channels, heads=heads)
+
+        for idx in range(self._num_layers - 2):
+            self.make_layers(
+                hidden_channels * heads,
+                hidden_channels,
+                heads=heads,
+            )
+
+        self.make_layers(hidden_channels * heads, num_classes, heads=1)
+
+        self.elu = nn.ELU()
+        self.identity = nn.Identity()
+        self.acts = nn.ModuleList(
+            [self.elu for _ in range(self._num_layers - 1)] + [self.identity]
+        )
+
+    def make_layers(self, dim_in, dim_out, heads=4):
+        self.convs.append(
+            GATConv(
+                dim_in,
+                dim_out,
+                heads=heads,
+            )
+        )
+        self.lins.append(torch.nn.Linear(dim_in, heads * dim_out))
 
     def forward(self, batch):
         x = batch.x
-        x = F.elu(self.conv1(x, batch.edge_index[0]) + self.lin1(x))
-        x = F.elu(self.conv2(x, batch.edge_index[1]) + self.lin2(x))
-        return self.conv3(x, batch.edge_index[2]) + self.lin3(x)
+        for idx, (conv, lin, act) in enumerate(zip(self.convs, self.lins, self.acts)):
+            x = act(conv(x, batch.edge_index[idx]) + lin(x))
+        return x, 0

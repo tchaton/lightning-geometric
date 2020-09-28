@@ -51,7 +51,7 @@ class ZINCDataset(BaseDataset, BaseRegressionSteps):
     @property
     def hyper_parameters(self):
         return {
-            "num_features": self.num_features,
+            "num_features": self.node_dim,
             "num_classes": self.num_classes,
             "node_dim": self.node_dim,
             "edge_dim": self.edge_dim,

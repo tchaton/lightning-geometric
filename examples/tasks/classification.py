@@ -46,8 +46,8 @@ class BinaryDatasetSteps(BaseClassificationSteps):
     loss_op = torch.nn.BCEWithLogitsLoss()
 
     def compute_loss(self, logits, targets, internal_losses):
-        preds = F.log_softmax(logits, -1)
-        loss = self.loss_op(preds, targets) + internal_losses
+        preds = F.sigmoid(logits)
+        loss = self.loss_op(preds.squeeze(), targets) + internal_losses
         return loss, preds
 
     def compute_acc(self, preds, targets):
