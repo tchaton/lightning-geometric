@@ -8,8 +8,8 @@ params:
     - _target_: torch_geometric.transforms.NormalizeFeatures
   samplers:
     - stage: 'train'
-      sampling: 'neighbor_sampler'
+      sampling: 'dataloader'
     - stage: 'val'
-      sampling: 'neighbor_sampler'
+      sampling: 'dataloader'
     - stage: 'test'
-      sampling: 'neighbor_sampler'
+      sampling: 'dataloader'

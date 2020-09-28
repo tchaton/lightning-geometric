@@ -44,8 +44,8 @@ def instantiate_model(cfg, data_module):
 
 
 def re_compile_model(model, data_module):
-    is_typed_dataloader = data_module.test_loader_type == SAMPLING.DataLoader.value
-    batchType = "TensorBatch" if is_typed_dataloader else "SparseBatch"
+    # is_typed_dataloader = data_module.test_loader_type == SAMPLING.DataLoader.value
+    batchType = "TensorBatch"
     path2model = model.__class__.__module__.replace(".", "/")
     with open(join(ROOT_DIR, f"{path2model}.py")) as f:
         code = f.read()
