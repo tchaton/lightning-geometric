@@ -75,10 +75,16 @@ class ARGVANodeClustering(BaseModel):
             {"optimizer": optim_encoder, "frequency": 1},
         )
 
-    def forward(self, batch):
+    def forward(self, is_discrimator: bool, batch):
         x = batch.x
         edge_index = batch.edge_index[0]
-        z = self.model.encode(x, edge_index)
-        loss = self.model.recon_loss(z, edge_index)
-        loss = loss + (1 / x.shape[0]) * self.model.kl_loss()
-        return z, loss
+        if not is_discrimator:
+            # Need to save z for discriminator pass
+            self._z = self.model.encode(x, edge_index)
+
+        if is_discrimator:
+            loss = self.model.discriminator_loss(self._z)
+        else:
+            loss = self.model.recon_loss(self._z, edge_index)
+            loss = loss + self.model.kl_loss()
+        return None, loss

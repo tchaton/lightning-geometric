@@ -1,5 +1,6 @@
 import os
 import os.path as osp
+from enum import Enum
 import numpy as np
 from functools import partial
 import torch
@@ -15,6 +16,11 @@ from torch_geometric.data import NeighborSampler
 import torch_geometric.transforms as T
 from examples.core.base_dataset_samplers import SAMPLING
 from examples.core.typing import SparseBatch, TensorBatch
+
+
+class GANMode(Enum):
+    Generator = "gen"
+    Discriminator = "dis"
 
 
 class BaseDatasetStepsMixin:
@@ -83,18 +89,23 @@ class BaseGANDatasetStepsMixin:
     def __init__(self, *args, **kwargs):
         pass
 
-    def step(self, batch, batch_nb, stage, mode):
+    def step(self, batch, batch_nb, stage, gan_mode):
         sampling = None
         for sampler in self._samplers:
             if sampler.stage == stage:
                 sampling = sampler.sampling
         typed_batch, targets = self.prepare_batch(batch, batch_nb, stage, sampling)
-        logits, internal_losses = self.forward(typed_batch)
+        logits, internal_losses = self.forward(
+            GANMode.Discriminator == gan_mode, typed_batch
+        )
         if logits is not None:
             if sampling == SAMPLING.DataLoader.value:
                 logits = logits[batch[f"{stage}_mask"]]
         loss, preds = self.compute_loss(logits, targets, internal_losses)
         return loss, preds, targets
+
+    def compute_loss(self, logits, targets, internal_losses):
+        return internal_losses, logits
 
     def prepare_batch(self, batch, batch_nb, stage, sampling):
         usual_keys = ["x", "edge_index", "edge_attr", "batch"]
@@ -127,17 +138,15 @@ class BaseGANDatasetStepsMixin:
         else:
             raise Exception("Not defined")
 
-    def training_step(self, batch, batch_idx, optimizer_idx, sampling=False):
-        breakpoint()
+    def training_step(self, batch, batch_nb, optimizer_idx, sampling=False):
+        stage = "train"
         # train generator
+        gan_mode = GANMode.Generator if optimizer_idx == 0 else GANMode.Discriminator
         if optimizer_idx == 0:
-            loss, preds, targets = self.step(self, batch, batch_nb, stage, "generator")
-
+            loss, preds, targets = self.step(batch, batch_nb, stage, gan_mode)
         # train discriminator
         if optimizer_idx == 1:
-            loss, preds, targets = self.step(
-                self, batch, batch_nb, stage, "discriminator"
-            )
-        result = pl.TrainResult(loss)
-        result.log("train_loss", loss, prog_bar=True)
+            loss, preds, targets = self.step(batch, batch_nb, stage, gan_mode)
+        result = pl.TrainResult(minimize=loss)
+        result.log(f"{gan_mode.value}_{stage}_loss", loss, prog_bar=True)
         return result
