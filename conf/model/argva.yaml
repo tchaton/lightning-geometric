@@ -2,7 +2,8 @@
 name: 'argva'
 _target_: examples.models.argva.ARGVANodeClustering
 params:
-  datasetMixIn:
+  defaulTasksMixin:
+    - _target_: examples.tasks.bases.BaseGANDatasetStepsMixin
   num_layers: 1
   num_features: 32
   hidden_channels: 64

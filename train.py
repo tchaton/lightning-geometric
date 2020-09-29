@@ -12,14 +12,14 @@ from examples.config import *
 from examples.datasets import *
 from examples.core import *
 from examples.utils.loggers import initialize_loggers
-from examples.utils import instantiate_model, check_jittable
+from examples.utils import instantiate_model, instantiate_data_module, check_jittable
 
 
 @hydra.main(config_path="conf", config_name="config")
 def my_app(cfg: DictConfig) -> None:
     print(OmegaConf.to_yaml(cfg))
 
-    data_module: pl.LightningDataModule = instantiate(cfg.dataset)
+    data_module: pl.LightningDataModule = instantiate_data_module(cfg)
     model: pl.LightningModule = instantiate_model(cfg, data_module)
 
     loggers: List[pl.callbacks.Callback] = initialize_loggers(

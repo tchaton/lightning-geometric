@@ -27,8 +27,6 @@ class CoraDataset(BaseDataset):
     ):
         super().__init__(*args, **kwargs)
 
-        breakpoint()
-
     @property
     def num_features(self):
         return 1433

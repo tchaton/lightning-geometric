@@ -22,14 +22,3 @@ class BaseTasksMixin:
         targets_mixin = [get_class(c._target_) for c in defaulTasksMixin]
         for t_cls in targets_mixin:
             self.__class__.__bases__ += (t_cls,)
-
-        """
-        mixins = [instantiate(c, *args, **kwargs) for c in defaulTasksMixin]
-
-        for mixin, func_names in named_funcs.items():
-            for func_name in func_names:
-                func = getattr(mixin, func_name)
-                partial_func = partial(func, self)
-                partial_func.__code__ = func.__code__
-                setattr(self, func_name, func)
-        """

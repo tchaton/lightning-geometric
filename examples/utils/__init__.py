@@ -22,6 +22,18 @@ def check_jittable(model, data_module):
     print("Check model is jittable complete.")
 
 
+def instantiate_data_module(cfg):
+    defaulTasksMixin = None
+    if hasattr(cfg.model, "params"):
+        if hasattr(cfg.model.params, "defaulTasksMixin"):
+            # Override dataset mixin
+            # TODO Better handle defaulTasksMixin injection
+            return instantiate(
+                cfg.dataset, defaulTasksMixin=cfg.model.params.defaulTasksMixin
+            )
+    return instantiate(cfg.dataset)
+
+
 def instantiate_model(cfg, data_module):
     cfg_copy = copy.deepcopy(cfg)
     model: pl.LightningModule = instantiate(
