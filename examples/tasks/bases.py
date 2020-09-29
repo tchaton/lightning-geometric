@@ -17,7 +17,7 @@ from examples.core.base_dataset_samplers import SAMPLING
 from examples.core.typing import SparseBatch, TensorBatch
 
 
-class BaseDatasetSteps:
+class BaseDatasetStepsMixin:
     def step(self, batch, batch_nb, stage):
         sampling = None
         for sampler in self._samplers:
@@ -25,8 +25,9 @@ class BaseDatasetSteps:
                 sampling = sampler.sampling
         typed_batch, targets = self.prepare_batch(batch, batch_nb, stage, sampling)
         logits, internal_losses = self.forward(typed_batch)
-        if sampling == SAMPLING.DataLoader.value:
-            logits = logits[batch[f"{stage}_mask"]]
+        if logits is not None:
+            if sampling == SAMPLING.DataLoader.value:
+                logits = logits[batch[f"{stage}_mask"]]
         loss, preds = self.compute_loss(logits, targets, internal_losses)
         return loss, preds, targets
 

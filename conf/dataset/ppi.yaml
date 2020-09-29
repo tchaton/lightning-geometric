@@ -2,6 +2,8 @@
 name: 'ppi'
 _target_: examples.datasets.ppi.PPIDataset
 params:
+  defaulTasksMixin:
+    - _target_: examples.tasks.classification.CategoricalStepsMixin
   num_layers: ${model.params.num_layers}
   samplers:
     - stage: 'train'

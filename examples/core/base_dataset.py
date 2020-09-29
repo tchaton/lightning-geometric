@@ -10,7 +10,8 @@ from pytorch_lightning import LightningDataModule
 import torch_geometric
 from torch_geometric.datasets import PPI
 import torch_geometric.transforms as T
-from examples.core.base_dataset_samplers import BaseDatasetSampler
+from examples.core.base_dataset_samplers import BaseDatasetSamplerMixin
+from examples.core.base_tasks_mixin import BaseTasksMixin
 
 
 def del_attr(kwargs, name):
@@ -20,7 +21,7 @@ def del_attr(kwargs, name):
         pass
 
 
-class BaseDataset(BaseDatasetSampler, LightningDataModule):
+class BaseDataset(BaseDatasetSamplerMixin, BaseTasksMixin, LightningDataModule):
 
     NAME = ...
 
@@ -30,7 +31,8 @@ class BaseDataset(BaseDatasetSampler, LightningDataModule):
         **kwargs,
     ):
         self.__instantiate_transform(kwargs)
-        BaseDatasetSampler.__init__(self, *args, **kwargs)
+        BaseDatasetSamplerMixin.__init__(self, *args, **kwargs)
+        BaseTasksMixin.__init__(self, *args, **kwargs)
         self.clean_kwargs(kwargs)
         LightningDataModule.__init__(self, *args, **kwargs)
 
@@ -47,10 +49,14 @@ class BaseDataset(BaseDatasetSampler, LightningDataModule):
 
         self._hyper_parameters = {}
 
+    def __handle_mixin(self):
+        pass
+
     def clean_kwargs(self, kwargs):
         del_attr(kwargs, "samplers")
         del_attr(kwargs, "num_edges")
         del_attr(kwargs, "num_layers")
+        del_attr(kwargs, "defaulTasksMixin")
 
     @property
     def config(self):

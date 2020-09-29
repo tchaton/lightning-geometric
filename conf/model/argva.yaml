@@ -1,0 +1,11 @@
+# @package _group_
+name: 'argva'
+_target_: examples.models.argva.ARGVANodeClustering
+params:
+  datasetMixIn:
+  num_layers: 1
+  num_features: 32
+  hidden_channels: 64
+  in_channels: 23
+  out_channels: 32
+  n_critic: 5

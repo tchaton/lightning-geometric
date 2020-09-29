@@ -13,11 +13,10 @@ from torch_geometric.data import DataLoader
 from torch_geometric.datasets import Planetoid
 from torch_geometric.data import NeighborSampler
 import torch_geometric.transforms as T
-from examples.tasks.classification import CategoricalDatasetSteps
 from examples.core.base_dataset import BaseDataset
 
 
-class CoraDataset(BaseDataset, CategoricalDatasetSteps):
+class CoraDataset(BaseDataset):
 
     NAME = "cora"
 
@@ -27,6 +26,8 @@ class CoraDataset(BaseDataset, CategoricalDatasetSteps):
         **kwargs,
     ):
         super().__init__(*args, **kwargs)
+
+        breakpoint()
 
     @property
     def num_features(self):

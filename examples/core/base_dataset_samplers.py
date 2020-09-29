@@ -9,7 +9,7 @@ class SAMPLING(Enum):
     NeighborSampler = "neighbor_sampler"
 
 
-class BaseDatasetSampler:
+class BaseDatasetSamplerMixin:
 
     STAGES = ["train", "val", "test"]
 

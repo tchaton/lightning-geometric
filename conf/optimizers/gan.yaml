@@ -1,0 +1,10 @@
+# @package _group_
+optimizers:
+  - name: 'encoder'
+    _target_: torch.optim.Adam
+    params:
+      lr: 0.005
+  - name: 'discriminator'
+    _target_: torch.optim.Adam
+    params:
+      lr: 0.001
