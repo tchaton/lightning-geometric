@@ -25,7 +25,12 @@ from examples.core.typing import SparseBatch, TensorBatch
 
 
 class GANMode(Enum):
-    Generator = "gen"
+    Encoder = "gen"
+    Discriminator = "dis"
+
+
+class VGAEMode(Enum):
+    Encoder = "enc"
     Discriminator = "dis"
 
 
@@ -91,11 +96,14 @@ class BaseDatasetStepsMixin:
         return self._test_step(batch, batch_nb, stage="test")
 
 
-class BaseGANDatasetStepsMixin:
+class BaseGenerativeStepsMixin:
+
+    GENERATIVE_TYPE = ...
+
     def __init__(self, *args, **kwargs):
         pass
 
-    def step(self, batch, batch_nb, stage, gan_mode):
+    def step(self, batch, batch_nb, stage, generative_mode):
         sampling = None
         for sampler in self._samplers:
             if sampler.stage == stage:
@@ -103,7 +111,9 @@ class BaseGANDatasetStepsMixin:
         typed_batch, targets = self.prepare_batch(batch, batch_nb, stage, sampling)
         typed_batch.x.requires_grad = True
         logits, internal_losses, internal_metrics = self.forward(
-            stage == "train", GANMode.Discriminator == gan_mode, typed_batch
+            stage == "train",
+            self.GENERATIVE_TYPE.Discriminator == generative_mode,
+            typed_batch,
         )
         if logits is not None:
             if sampling == SAMPLING.DataLoader.value:
@@ -148,19 +158,23 @@ class BaseGANDatasetStepsMixin:
     def training_step(self, batch, batch_nb, optimizer_idx, sampling=False):
         stage = "train"
         # train generator
-        gan_mode = GANMode.Generator if optimizer_idx == 0 else GANMode.Discriminator
+        generative_mode = (
+            self.GENERATIVE_TYPE.Encoder
+            if optimizer_idx == 0
+            else self.GENERATIVE_TYPE.Discriminator
+        )
         if optimizer_idx == 0:
-            loss, preds, targets = self.step(batch, batch_nb, stage, gan_mode)
+            loss, preds, targets = self.step(batch, batch_nb, stage, generative_mode)
         # train discriminator
         if optimizer_idx == 1:
-            loss, preds, targets = self.step(batch, batch_nb, stage, gan_mode)
+            loss, preds, targets = self.step(batch, batch_nb, stage, generative_mode)
         result = pl.TrainResult(minimize=loss)
-        result.log(f"{gan_mode.value}_{stage}_loss", loss, prog_bar=True)
+        result.log(f"{generative_mode.value}_{stage}_loss", loss, prog_bar=True)
         return result
 
     def _test_step(self, batch, batch_nb, stage=None):
-        gan_mode = GANMode.Generator
-        loss, preds, targets = self.step(batch, batch_nb, stage, gan_mode)
+        generative_mode = self.GENERATIVE_TYPE.Encoder
+        loss, preds, targets = self.step(batch, batch_nb, stage, generative_mode)
         return self.compute_result(loss, preds, targets, stage)
 
     def validation_step(self, batch, batch_nb):
@@ -186,3 +200,13 @@ class BaseGANDatasetStepsMixin:
         result.log(f"{stage}_hm", hm, prog_bar=True)
         result.log(f"{stage}_nmi", nmi, prog_bar=True)
         return result
+
+
+class BaseGanStepsMixin(BaseGenerativeStepsMixin):
+
+    GENERATIVE_TYPE = GANMode
+
+
+class BaseVgaeStepsMixin(BaseGenerativeStepsMixin):
+
+    GENERATIVE_TYPE = VGAEMode
