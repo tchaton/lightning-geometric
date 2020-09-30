@@ -34,14 +34,22 @@ class VGAEMode(Enum):
     Discriminator = "dis"
 
 
-class BaseDatasetStepsMixin:
-    def step(self, batch, batch_nb, stage):
+class BaseStepsMixin:
+    def step(self, batch, batch_nb, stage, generative_mode=None):
         sampling = None
         for sampler in self._samplers:
             if sampler.stage == stage:
                 sampling = sampler.sampling
         typed_batch, targets = self.prepare_batch(batch, batch_nb, stage, sampling)
-        logits, internal_losses = self.forward(typed_batch)
+        typed_batch.x.requires_grad = True
+        if generative_mode is not None:
+            logits, internal_losses, internal_metrics = self.forward(
+                stage == "train",
+                self.GENERATIVE_TYPE.Discriminator == generative_mode,
+                typed_batch,
+            )
+        else:
+            logits, internal_losses = self.forward(typed_batch)
         if logits is not None:
             if sampling == SAMPLING.DataLoader.value:
                 logits = logits[batch[f"{stage}_mask"]]
@@ -78,16 +86,6 @@ class BaseDatasetStepsMixin:
             )
         else:
             raise Exception("Not defined")
-
-    def training_step(self, batch, batch_nb, sampling=None):
-        loss, _, _ = self.step(batch, batch_nb, "train")
-        result = pl.TrainResult(loss)
-        result.log("train_loss", loss, prog_bar=True)
-        return result
-
-    def _test_step(self, batch, batch_nb, stage=None):
-        loss, preds, targets = self.step(batch, batch_nb, stage)
-        return self.compute_result(loss, preds, targets, stage)
 
     def validation_step(self, batch, batch_nb):
         return self._test_step(batch, batch_nb, stage="val")
@@ -96,64 +94,32 @@ class BaseDatasetStepsMixin:
         return self._test_step(batch, batch_nb, stage="test")
 
 
-class BaseGenerativeStepsMixin:
+class BaseDatasetStepsMixin(BaseStepsMixin):
+    def training_step(self, batch, batch_nb, sampling=None):
+        loss, _, _ = self.step(batch, batch_nb, "train")
+        result = pl.TrainResult(loss)
+        result.log("train_loss", loss, prog_bar=True)
+        return result
+
+    def _test_step(
+        self,
+        batch,
+        batch_nb,
+        stage=None,
+    ):
+        loss, preds, targets = self.step(batch, batch_nb, stage)
+        return self.compute_result(loss, preds, targets, stage)
+
+
+class BaseGenerativeStepsMixin(BaseStepsMixin):
 
     GENERATIVE_TYPE = ...
 
     def __init__(self, *args, **kwargs):
         pass
 
-    def step(self, batch, batch_nb, stage, generative_mode):
-        sampling = None
-        for sampler in self._samplers:
-            if sampler.stage == stage:
-                sampling = sampler.sampling
-        typed_batch, targets = self.prepare_batch(batch, batch_nb, stage, sampling)
-        typed_batch.x.requires_grad = True
-        logits, internal_losses, internal_metrics = self.forward(
-            stage == "train",
-            self.GENERATIVE_TYPE.Discriminator == generative_mode,
-            typed_batch,
-        )
-        if logits is not None:
-            if sampling == SAMPLING.DataLoader.value:
-                logits = logits[batch[f"{stage}_mask"]]
-        loss, preds = self.compute_loss(logits, targets, internal_losses)
-        return loss, preds, targets
-
     def compute_loss(self, logits, targets, internal_losses):
         return internal_losses, logits
-
-    def prepare_batch(self, batch, batch_nb, stage, sampling):
-        usual_keys = ["x", "edge_index", "edge_attr", "batch"]
-        Batch: TensorBatch = namedtuple("Batch", usual_keys)
-        if sampling == SAMPLING.DataLoader.value:
-            stage_mask = batch[f"{stage}_mask"]
-            batch_args = {}
-            for key in usual_keys:
-                if key in batch.keys:
-                    batch_args[key] = batch[key]
-                    if key == "edge_index":
-                        batch_args[key] = [
-                            batch_args[key].long() for _ in range(self._num_layers)
-                        ]
-                else:
-                    batch_args[key] = None
-            targets = batch["y"][stage_mask] if stage_mask is not None else batch["y"]
-            return Batch(**batch_args), targets
-
-        elif sampling == SAMPLING.NeighborSampler.value:
-            return (
-                Batch(
-                    self.data.x[batch[1]],
-                    [e.edge_index for e in batch[2]],
-                    None,
-                    None,
-                ),
-                self.data.y[batch[1]],
-            )
-        else:
-            raise Exception("Not defined")
 
     def training_step(self, batch, batch_nb, optimizer_idx, sampling=False):
         stage = "train"
@@ -176,12 +142,6 @@ class BaseGenerativeStepsMixin:
         generative_mode = self.GENERATIVE_TYPE.Encoder
         loss, preds, targets = self.step(batch, batch_nb, stage, generative_mode)
         return self.compute_result(loss, preds, targets, stage)
-
-    def validation_step(self, batch, batch_nb):
-        return self._test_step(batch, batch_nb, stage="val")
-
-    def test_step(self, batch, batch_nb):
-        return self._test_step(batch, batch_nb, stage="test")
 
     def compute_result(self, loss, preds, targets, stage):
         # Cluster embedded values using k-means.
