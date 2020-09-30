@@ -1,0 +1,8 @@
+# @package _group_
+name: 'gcn'
+_target_: examples.models.gcn.GCNConvNet
+params:
+  hidden_channels: 32
+  num_layers: 3
+  use_gdc: ${dataset.params.use_gdc}
+  cached: False

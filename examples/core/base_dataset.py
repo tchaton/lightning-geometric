@@ -1,4 +1,5 @@
 import os
+import inspect
 import os.path as osp
 import numpy as np
 from functools import partial
@@ -53,10 +54,11 @@ class BaseDataset(BaseDatasetSamplerMixin, BaseTasksMixin, LightningDataModule):
         pass
 
     def clean_kwargs(self, kwargs):
-        del_attr(kwargs, "samplers")
-        del_attr(kwargs, "num_edges")
-        del_attr(kwargs, "num_layers")
-        del_attr(kwargs, "defaulTasksMixin")
+        LightningDataModuleArgs = inspect.getargspec(LightningDataModule.__init__).args
+        keys = list(kwargs.keys())
+        for key in keys:
+            if key not in LightningDataModuleArgs:
+                del_attr(kwargs, key)
 
     @property
     def config(self):
@@ -71,7 +73,13 @@ class BaseDataset(BaseDatasetSamplerMixin, BaseTasksMixin, LightningDataModule):
 
         for k in [k for k in kwargs]:
             if "transform" in k and kwargs.get(k) is not None:
-                transform = T.Compose([instantiate(t) for t in kwargs.get(k)])
+                transforms = []
+                for t in kwargs.get(k):
+                    if hasattr(t, "activate"):
+                        if t.activate is False:
+                            continue
+                    transforms.append(instantiate(t))
+                transform = T.Compose(transforms)
                 setattr(self, f"_{k}", transform)
                 del kwargs[k]
 
