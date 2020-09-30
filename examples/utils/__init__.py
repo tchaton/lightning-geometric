@@ -45,11 +45,7 @@ def instantiate_model(cfg, data_module):
         attach_step_and_epoch_functions(model, data_module)
         return model
     model_cls = re_compile_model(model, data_module)
-    model = model_cls(
-        **cfg_copy.model.params,
-        optimizers=cfg_copy.optimizers.optimizers,
-        **data_module.hyper_parameters,
-    )
+    model = model_cls(**dict(model.hparams))
     model.convert_to_jittable()
     attach_step_and_epoch_functions(model, data_module)
     return model

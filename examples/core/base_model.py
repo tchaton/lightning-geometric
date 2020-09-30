@@ -85,7 +85,7 @@ class BaseModel(pl.LightningModule):
 
     def _convert_to_jittable(self, module):
         for key, m in module._modules.items():
-            if isinstance(m, MessagePassing):
+            if isinstance(m, MessagePassing) and m.jittable is not None:
                 module._modules[key] = m.jittable()
             else:
                 self._convert_to_jittable(m)
