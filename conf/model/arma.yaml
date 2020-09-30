@@ -1,0 +1,10 @@
+# @package _group_
+name: 'arma'
+_target_: examples.models.arma.ARMAConvNet
+params:
+  num_layers: 2
+  hidden_channels: 16
+  num_stacks: 3
+  arma_num_layers: 2
+  shared_weights: False
+  dropout: 0.25

@@ -3,7 +3,7 @@ name: 'argva'
 _target_: examples.models.argva.ARGVANodeClustering
 params:
   defaulTasksMixin:
-    - _target_: examples.tasks.bases.BaseGanStepsMixin
+    - _target_: examples.tasks.bases.BaseVgaeStepsMixin
   num_layers: 1
   num_features: 32
   hidden_channels: 64
