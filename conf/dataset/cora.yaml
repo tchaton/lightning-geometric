@@ -2,7 +2,7 @@
 name: 'cora'
 _target_: examples.datasets.cora.CoraDataset
 params:
-  use_gdc: False
+  use_gdc: True
   defaulTasksMixin:
     - _target_: examples.tasks.classification.CategoricalClassificationStepsMixin
   num_edges: -1

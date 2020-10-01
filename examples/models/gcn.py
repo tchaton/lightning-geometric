@@ -47,33 +47,13 @@ class GCNConvNet(BaseModel):
             )
         )
 
-        self.forward = (
-            self.forward_with_gdc if kwargs["use_gdc"] else self.forward_without_gcd
-        )
-
-    def forward_with_gdc(self, batch):
+    def forward(self, batch):
         x = batch.x
-        edge_attr = batch.edge_attr
-        assert edge_attr is not None
-        edge_attr = edge_attr[0]
         for idx, conv in enumerate(self.convs):
             edge_index = (
                 batch.edge_index[idx]
                 if len(batch.edge_index) == 1
                 else batch.edge_index[0]
             )
-            x = conv(x, edge_index, edge_attr)
-        return x, 0
-
-    def forward_without_gcd(self, batch):
-        x = batch.x
-        assert batch.edge_attr is None
-        edge_attr = None
-        for idx, conv in enumerate(self.convs):
-            edge_index = (
-                batch.edge_index[idx]
-                if len(batch.edge_index) == 1
-                else batch.edge_index[0]
-            )
-            x = conv(x, edge_index, edge_attr)
+            x = conv(x, edge_index, batch.edge_attr)
         return x, 0

@@ -26,8 +26,6 @@ def my_app(cfg: DictConfig) -> None:
         cfg, **model.config, **data_module.config
     )
 
-    checkpoint_callback = pl.callbacks.ModelCheckpoint(filepath=None, save_last=True)
-
     gpus = list(range(torch.cuda.device_count())) if torch.cuda.is_available() else None
 
     resume_from_checkpoint = None

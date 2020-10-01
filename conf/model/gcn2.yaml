@@ -1,0 +1,11 @@
+# @package _group_
+name: 'gcn2'
+_target_: examples.models.gcn2.GCN2ConvNet
+params:
+  hidden_channels: 32
+  num_layers: 3
+  alpha: 0.1
+  theta: 0.5
+  shared_weights: True
+  dropout: 0.6
+  normalize: False
