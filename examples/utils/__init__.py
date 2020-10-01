@@ -85,13 +85,17 @@ class CustomGNNExplainer(GNNExplainer):
 
 
 def check_jittable(model, data_module):
-    path2model = os.path.join(os.getcwd(), "model.pt")
-    torch.jit.save(model.to_torchscript(), path2model)
-    model = torch.jit.load(path2model)
-    data_module.forward = model.forward
-    batch = get_single_batch(data_module)
-    _ = data_module.step(batch, None, "test")
-    print("Check model is jittable complete.")
+    try:
+        path2model = os.path.join(os.getcwd(), "model.pt")
+        torch.jit.save(model.to_torchscript(), path2model)
+        model = torch.jit.load(path2model)
+        data_module.forward = model.forward
+        batch = get_single_batch(data_module)
+        _ = data_module.step(batch, None, "test")
+        print("Check model is jittable complete.")
+    except Exception as e:
+        log.info(e)
+        log.info("Jittable Failed.")
 
 
 def instantiate_data_module(cfg):
@@ -122,15 +126,18 @@ def run_explainer(explainer, trainer, model, data_module):
             # return loss, preds, targets
             return self.data_module.inference_step(batch, None, "test")[0][0]
 
-    explainer = CustomGNNExplainer(ExplainerModel(model, data_module), **explainer)
-    batch = get_single_batch(data_module)
-    node_idx = 0
-    node_feat_mask, edge_mask = explainer.explain_node(node_idx, batch.clone())
-    breakpoint()
-    ax, G = explainer.visualize_subgraph(
-        node_idx, batch.edge_index, edge_mask, y=batch.y
-    )
-    plt.show()
+    try:
+        explainer = CustomGNNExplainer(ExplainerModel(model, data_module), **explainer)
+        batch = get_single_batch(data_module)
+        node_idx = 0
+        node_feat_mask, edge_mask = explainer.explain_node(node_idx, batch.clone())
+        ax, G = explainer.visualize_subgraph(
+            node_idx, batch.edge_index, edge_mask, y=batch.y
+        )
+        plt.show()
+    except Exception as e:
+        log.info(e)
+        log.info("Explainer Failed.")
 
 
 def instantiate_model(cfg, data_module):

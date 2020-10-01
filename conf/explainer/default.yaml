@@ -1,5 +1,5 @@
 # @package _group_
-activate: True
+activate: ${explain}
 params:
   epochs: 100
   lr: 0.01

@@ -81,6 +81,7 @@ class Config:
     notes: str = MISSING
     name: str = MISSING
     jit: bool = True
+    explain: bool = True
 
 
 cs = ConfigStore.instance()
