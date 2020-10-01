@@ -1,11 +1,8 @@
 import os.path as osp
-
 import torch
 from torch import nn
 import torch.nn.functional as F
 from torch_geometric.nn import GCNConv
-import pytorch_lightning as pl
-from examples.core.base_model import BaseModel
 from examples.core.base_model import BaseModel
 
 
