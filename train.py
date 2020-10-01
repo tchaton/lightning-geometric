@@ -12,12 +12,20 @@ from examples.config import *
 from examples.datasets import *
 from examples.core import *
 from examples.utils.loggers import initialize_loggers
-from examples.utils import instantiate_model, instantiate_data_module, check_jittable
+from examples.utils import (
+    instantiate_model,
+    instantiate_data_module,
+    run_explainer,
+    check_jittable,
+)
+import logging
+
+log = logging.getLogger(__name__)
 
 
 @hydra.main(config_path="conf", config_name="config")
 def my_app(cfg: DictConfig) -> None:
-    print(OmegaConf.to_yaml(cfg))
+    log.info(OmegaConf.to_yaml(cfg))
 
     data_module: pl.LightningDataModule = instantiate_data_module(cfg)
     model: pl.LightningModule = instantiate_model(cfg, data_module)
@@ -33,7 +41,10 @@ def my_app(cfg: DictConfig) -> None:
     trainer: pl.Trainer = instantiate(cfg.trainer, gpus=gpus, logger=loggers)
 
     trainer.fit(model, data_module)
-    print("Training complete.")
+    log.info("Training complete.")
+
+    if cfg.explainer.activate:
+        run_explainer(cfg.explainer.params, trainer, model, data_module)
 
     if cfg.jit:
         check_jittable(model, data_module)

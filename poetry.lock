@@ -745,6 +745,7 @@ test = ["coverage (>=5.0)", "codecov (>=2.1)", "pytest (>=5.0)", "pytest-cov", "
 reference = "fe290280be18a689a53bdf56419a76987ed6aeed"
 type = "git"
 url = "https://github.com/PyTorchLightning/pytorch-lightning.git"
+
 [[package]]
 category = "main"
 description = "World timezone definitions, modern and historical"
@@ -1026,6 +1027,7 @@ test = ["pytest", "pytest-cov", "mock"]
 reference = "8bf6edf423fef012281d82f8a90e9d7f731485b4"
 type = "git"
 url = "https://github.com/rusty1s/pytorch_geometric.git"
+
 [[package]]
 category = "main"
 description = "PyTorch Extension Library of Optimized Scatter Operations"
@@ -1199,7 +1201,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["pytest (>=3.5,<3.7.3 || >3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pytest-cov", "jaraco.test (>=3.2.0)", "jaraco.itertools", "func-timeout", "pytest-black (>=0.3.7)", "pytest-mypy"]
 
 [metadata]
-content-hash = "a438b3e055c0fb16eb95865572c25565fa2404701206880da4c3fccb2562b63a"
+content-hash = "499524a3c3076fb50ca64abc26b63881b29ec4bfaf4f96d0f310a7867e799ee5"
 lock-version = "1.0"
 python-versions = "3.7.8"
 

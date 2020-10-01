@@ -35,21 +35,38 @@ class VGAEMode(Enum):
 
 
 class BaseStepsMixin:
-    def step(self, batch, batch_nb, stage, generative_mode=None):
+    def inference_step(self, batch, batch_nb, stage, generative_mode=None):
         sampling = None
         for sampler in self._samplers:
             if sampler.stage == stage:
                 sampling = sampler.sampling
         typed_batch, targets = self.prepare_batch(batch, batch_nb, stage, sampling)
-        typed_batch.x.requires_grad = True
+        if typed_batch.x.is_leaf:
+            typed_batch.x.requires_grad = True
         if generative_mode is not None:
-            logits, internal_losses, internal_metrics = self.forward(
+            outputs = self.forward(
                 stage == "train",
                 self.GENERATIVE_TYPE.Discriminator == generative_mode,
                 typed_batch,
             )
         else:
-            logits, internal_losses = self.forward(typed_batch)
+            outputs = self.forward(typed_batch)
+
+        return outputs, targets, sampling
+
+    def step(self, batch, batch_nb, stage, generative_mode=None):
+        if generative_mode is not None:
+            (
+                (logits, internal_losses, internal_metrics),
+                targets,
+                sampling,
+            ) = self.inference_step(
+                batch, batch_nb, stage, generative_mode=generative_mode
+            )
+        else:
+            (logits, internal_losses), targets, sampling = self.inference_step(
+                batch, batch_nb, stage
+            )
         if logits is not None:
             if sampling == SAMPLING.DataLoader.value:
                 logits = logits[batch[f"{stage}_mask"]]

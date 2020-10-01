@@ -3,6 +3,7 @@ defaults:
   - dataset: ???
   - optimizers: adam
   - trainer: debbuging
+  - explainer: default
   - loggers: ???
 
 notes:

@@ -10,7 +10,7 @@ defaults = [
     {"loggers": MISSING},
     {"optimizers": "adam"},
     {"trainer": "debugging"},
-    {"loggers": MISSING},
+    {"explainer": "default"},
 ]
 
 
@@ -47,6 +47,14 @@ class WanDBConf(Dict[str, Any]):
 
 
 @dataclass
+class ExplainerConf(Dict[str, Any]):
+    epochs: int = 100
+    lr: float = 0.01
+    num_hops: Optional[int] = None
+    log: bool = True
+
+
+@dataclass
 class LoggersConf(Dict[str, Any]):
     # class, class method or function name
     loggers: List = MISSING
@@ -67,6 +75,7 @@ class Config:
     optimizers: Any = MISSING
     trainer: Any = MISSING
     loggers: Any = MISSING
+    explainer: Any = MISSING
 
     log: bool = MISSING
     notes: str = MISSING
@@ -88,6 +97,9 @@ cs.store(group="optimizers", name="adam", node=OptimizerConf)
 
 # Training definitition
 cs.store(group="trainer", name="debugging", node=ObjectConf)
+
+# Training definitition
+cs.store(group="explainer", name="default", node=ExplainerConf)
 
 # Logging Entities
 cs.store(group="loggers", name="thomas-chaton", node=LoggersConf)

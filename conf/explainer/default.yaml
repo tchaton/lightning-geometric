@@ -1,0 +1,7 @@
+# @package _group_
+activate: True
+params:
+  epochs: 100
+  lr: 0.01
+  num_hops: 0
+  log: True
