@@ -1,3 +1,3 @@
 # @package _group_
 name: 'spline'
-_target_: examples.models.spline.SplineConvNet
+_target_: examples.models.${model.name}.SplineConvNet

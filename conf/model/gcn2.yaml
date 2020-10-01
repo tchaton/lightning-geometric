@@ -1,6 +1,6 @@
 # @package _group_
 name: 'gcn2'
-_target_: examples.models.gcn2.GCN2ConvNet
+_target_: examples.models.${model.name}.GCN2ConvNet
 params:
   hidden_channels: 32
   num_layers: 3

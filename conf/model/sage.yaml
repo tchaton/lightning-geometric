@@ -1,6 +1,6 @@
 # @package _group_
 name: 'sage'
-_target_: examples.models.sage.SAGEConvNet
+_target_: examples.models.${model.name}.SAGEConvNet
 params:
   hidden_channels: 64
   num_layers: 2

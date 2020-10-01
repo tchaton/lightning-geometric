@@ -1,5 +1,5 @@
 # @package _group_
 name: 'agnn'
-_target_: examples.models.agnn.AGNNConvNet
+_target_: examples.models.${model.name}.AGNNConvNet
 params:
   num_layers: 2

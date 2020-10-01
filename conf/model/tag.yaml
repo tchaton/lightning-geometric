@@ -1,6 +1,6 @@
 # @package _group_
 name: 'tag'
-_target_: examples.models.tag.TAGConvNet
+_target_: examples.models.${model.name}.TAGConvNet
 params:
   hidden_channels: 64
   num_layers: 2

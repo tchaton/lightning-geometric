@@ -1,0 +1,6 @@
+# @package _group_
+name: 'infomax'
+_target_: examples.models.${model.name}.InfoMaxModel
+params:
+  hidden_channels: 512
+  num_layers: 1

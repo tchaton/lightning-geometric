@@ -1,6 +1,6 @@
 # @package _group_
 name: 'arma'
-_target_: examples.models.arma.ARMAConvNet
+_target_: examples.models.${model.name}.ARMAConvNet
 params:
   num_layers: 2
   hidden_channels: 16

@@ -1,6 +1,6 @@
 # @package _group_
 name: 'renet'
-_target_: examples.models.renet.RENet
+_target_: examples.models.${model.name}.RENet
 params:
   model:
     _target_: torch_geometric.nn.models.re_net.RENet

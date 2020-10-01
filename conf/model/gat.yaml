@@ -1,6 +1,6 @@
 # @package _group_
 name: 'gat'
-_target_: examples.models.gat.GATConvNet
+_target_: examples.models.${model.name}.GATConvNet
 params:
   hidden_channels: 32
   num_layers: 3

@@ -1,6 +1,6 @@
 # @package _group_
-name: 'gcn2'
-_target_: examples.models.graph_unet.GraphUNetModel
+name: 'graph_unet'
+_target_: examples.models.${model.name}.GraphUNetModel
 params:
   hidden_channels: 32
   num_layers: 3

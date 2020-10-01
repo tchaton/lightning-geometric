@@ -1,6 +1,6 @@
 # @package _group_
 name: 'sgc'
-_target_: examples.models.sgc.SGConvNet
+_target_: examples.models.${model.name}.SGConvNet
 params:
   hidden_channels: 64
   num_layers: 2
