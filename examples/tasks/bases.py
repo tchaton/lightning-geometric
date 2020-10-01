@@ -91,7 +91,10 @@ class BaseStepsMixin:
             targets = batch["y"][stage_mask] if stage_mask is not None else batch["y"]
             return Batch(**batch_args), targets
 
-        elif sampling == SAMPLING.NeighborSampler.value:
+        elif (
+            sampling == SAMPLING.NeighborSampler.value
+            or sampling == SAMPLING.GraphSAINTRandomWalkSampler.value
+        ):
             return (
                 Batch(
                     self.data.x[batch[1]],

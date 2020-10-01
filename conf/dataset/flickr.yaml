@@ -1,0 +1,24 @@
+# @package _group_
+name: 'flickr'
+_target_: examples.datasets.flickr.FlickrDataset
+params:
+  defaulTasksMixin:
+    - _target_: examples.tasks.classification.CategoricalClassificationStepsMixin
+  num_layers: ${model.params.num_layers}
+  num_edges: -1
+  sampling:
+    name: GraphSAINTRandomWalkSampler
+    _target_: torch_geometric.data.GraphSAINTRandomWalkSampler
+    params:
+      batch_size: 6000
+      walk_length: 2
+      num_steps: 5
+      sample_coverage: 100
+      num_workers: 4
+  samplers:
+    - stage: 'train'
+      sampling: ${dataset.params.sampling}
+    - stage: 'val'
+      sampling: ${dataset.params.sampling}
+    - stage: 'test'
+      sampling: ${dataset.params.sampling}

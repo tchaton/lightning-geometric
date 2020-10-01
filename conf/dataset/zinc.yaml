@@ -3,7 +3,7 @@ name: 'zinc'
 _target_: examples.datasets.zinc.ZINCDataset
 params:
   defaulTasksMixin:
-    - _target_: examples.tasks.classification.CategoricalStepsMixin
+    - _target_: examples.tasks.classification.CategoricalClassificationStepsMixin
   num_layers: ${model.params.num_layers}
   samplers:
     - stage: 'train'
