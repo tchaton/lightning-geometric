@@ -37,7 +37,7 @@ jobs:
           pip install virtualenv
           python -m venv ${pythonEnv}
           source ${pythonEnv}/bin/activate
-          python -m pip install -U pip
+          python -m pip install torch==1.6.0+cpu torchvision==0.7.0+cpu -f https://download.pytorch.org/whl/torch_stable.html
           python -m pip install -r requirements.txt && rm -rf /root/.cache
         env:
           pythonEnv: /home/runner/.cache/${{ matrix.python-version }}
