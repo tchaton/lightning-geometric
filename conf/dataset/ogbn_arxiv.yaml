@@ -1,6 +1,6 @@
 # @package _group_
 name: 'ogbn_arxiv'
-_target_: examples.datasets.ogbn_arxiv.OgbnArxivDataset
+_target_: examples.datasets.${dataset.name}.OgbnArxivDataset
 params:
   dataset:
     _target_: ogb.nodeproppred.PygNodePropPredDataset

@@ -1,6 +1,6 @@
 # @package _group_
 name: 'faust'
-_target_: examples.datasets.faust.FAUSTDataset
+_target_: examples.datasets.${dataset.name}.FAUSTDataset
 params:
   pre_transform:
     - _target_: torch_geometric.transforms.FaceToEdge

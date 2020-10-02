@@ -15,12 +15,12 @@ from torch_geometric.data import NeighborSampler
 import torch_geometric.transforms as T
 from examples.core.base_dataset_samplers import SAMPLING
 from examples.core.typing import SparseBatch, TensorBatch
-from examples.tasks.bases import BaseDatasetStepsMixin
+from examples.tasks.bases import BaseNodeStepsMixinMixin
 
 
-class BaseClassificationStepsMixin(BaseDatasetStepsMixin):
+class BaseNodeClassificationStepsMixin(BaseNodeStepsMixinMixin):
     def __init__(self, *args, **kwargs):
-        super(BaseClassificationStepsMixin, self).__init__()
+        super(BaseNodeClassificationStepsMixin, self).__init__()
 
     def compute_result(self, loss, preds, targets, stage):
         if not hasattr(self, "_acc_meter"):
@@ -32,7 +32,7 @@ class BaseClassificationStepsMixin(BaseDatasetStepsMixin):
         return result
 
 
-class CategoricalClassificationStepsMixin(BaseClassificationStepsMixin):
+class NodeCategoricalClassificationStepsMixin(BaseNodeClassificationStepsMixin):
     def compute_loss(self, logits, targets, internal_losses):
         preds = F.log_softmax(logits, -1)
         loss = F.nll_loss(preds, targets) + internal_losses
@@ -42,7 +42,7 @@ class CategoricalClassificationStepsMixin(BaseClassificationStepsMixin):
         return self._acc_meter(preds, targets)
 
 
-class BinaryClassificationStepsMixin(BaseClassificationStepsMixin):
+class NodeBinaryClassificationStepsMixin(BaseNodeClassificationStepsMixin):
 
     loss_op = torch.nn.BCEWithLogitsLoss()
 

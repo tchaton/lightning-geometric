@@ -114,7 +114,7 @@ class BaseStepsMixin:
         return self._test_step(batch, batch_nb, stage="test")
 
 
-class BaseDatasetStepsMixin(BaseStepsMixin):
+class BaseNodeStepsMixinMixin(BaseStepsMixin):
     def training_step(self, batch, batch_nb, sampling=None):
         loss, _, _ = self.step(batch, batch_nb, "train")
         result = pl.TrainResult(loss)

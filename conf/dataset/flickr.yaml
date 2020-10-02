@@ -1,9 +1,9 @@
 # @package _group_
 name: 'flickr'
-_target_: examples.datasets.flickr.FlickrDataset
+_target_: examples.datasets.${dataset.name}.FlickrDataset
 params:
   defaulTasksMixin:
-    - _target_: examples.tasks.classification.CategoricalClassificationStepsMixin
+    - _target_: examples.tasks.classification.NodeCategoricalClassificationStepsMixin
   num_layers: ${model.params.num_layers}
   num_edges: -1
   sampling:

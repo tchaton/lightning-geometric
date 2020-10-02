@@ -1,10 +1,10 @@
 # @package _group_
 name: 'cora'
-_target_: examples.datasets.cora.CoraDataset
+_target_: examples.datasets.${dataset.name}.CoraDataset
 params:
   use_gdc: False
   defaulTasksMixin:
-    - _target_: examples.tasks.classification.CategoricalClassificationStepsMixin
+    - _target_: examples.tasks.classification.NodeCategoricalClassificationStepsMixin
   num_edges: -1
   num_layers: ${model.params.num_layers}
   transform:

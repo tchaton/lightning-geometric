@@ -15,12 +15,12 @@ from torch_geometric.data import NeighborSampler
 import torch_geometric.transforms as T
 from examples.core.base_dataset_samplers import SAMPLING
 from examples.core.typing import SparseBatch, TensorBatch
-from examples.tasks.bases import BaseDatasetSteps
+from examples.tasks.bases import BaseNodeStepsMixin
 
 
-class BaseRegressionSteps(BaseDatasetSteps):
+class NodeRegressionStepsMixin(BaseNodeStepsMixin):
     def __init__(self, *args, **kwargs):
-        super(BaseRegressionSteps, self).__init__(*args, **kwargs)
+        super(NodeRegressionStepsMixin, self).__init__(*args, **kwargs)
 
     def compute_loss(self, inputs, targets, internal_losses):
         loss = (inputs.squeeze() - targets).abs().mean() + internal_losses

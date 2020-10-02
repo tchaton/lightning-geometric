@@ -1,9 +1,9 @@
 # @package _group_
 name: 'reddit'
-_target_: examples.datasets.reddit.RedditDataset
+_target_: examples.datasets.${dataset.name}.RedditDataset
 params:
   defaulTasksMixin:
-    - _target_: examples.tasks.classification.CategoricalClassificationStepsMixin
+    - _target_: examples.tasks.classification.NodeCategoricalClassificationStepsMixin
   num_edges: 25
   num_layers: ${model.params.num_layers}
   samplers:

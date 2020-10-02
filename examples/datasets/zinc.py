@@ -12,10 +12,10 @@ import pytorch_lightning as pl
 from sklearn.metrics import f1_score
 from torch_geometric.utils import degree
 from examples.core.base_dataset import BaseDataset
-from examples.tasks.regression import BaseRegressionSteps
+from examples.tasks.regression import NodeRegressionStepsMixin
 
 
-class ZINCDataset(BaseDataset, BaseRegressionSteps):
+class ZINCDataset(BaseDataset, NodeRegressionStepsMixin):
 
     NAME = "ZINC"
 

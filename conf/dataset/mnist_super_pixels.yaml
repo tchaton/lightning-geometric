@@ -1,0 +1,25 @@
+# @package _group_
+name: 'mnist_super_pixels'
+_target_: examples.datasets.${dataset.name}.MNISTSuperpixelsDataset
+params:
+  defaulTasksMixin:
+    - _target_: examples.tasks.classification.NodeCategoricalClassificationStepsMixin
+  num_edges: -1
+  num_layers: ${model.params.num_layers}
+  transform:
+    - activate: True
+      _target_: torch_geometric.transforms.Cartesian
+      params:
+        cat: True
+    - activate: True
+      _target_: examples.core.transforms.AddFeatsByKeys
+      params:
+        list_add_to_x: [True]
+        feat_names: [pos]
+        input_nc_feats: [2]
+        delete_feats: [True]
+  samplers:
+    - stage: 'train'
+      sampling: 'dataloader'
+    - stage: 'test'
+      sampling: 'dataloader'

@@ -1,9 +1,9 @@
 # @package _group_
 name: 'ppi'
-_target_: examples.datasets.ppi.PPIDataset
+_target_: examples.datasets.${dataset.name}.PPIDataset
 params:
   defaulTasksMixin:
-    - _target_: examples.tasks.classification.CategoricalClassificationStepsMixin
+    - _target_: examples.tasks.classification.NodeCategoricalClassificationStepsMixin
   num_layers: ${model.params.num_layers}
   samplers:
     - stage: 'train'

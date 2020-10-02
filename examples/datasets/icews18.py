@@ -13,10 +13,10 @@ import pytorch_lightning as pl
 from sklearn.metrics import f1_score
 
 from examples.core.base_dataset import BaseDataset
-from examples.tasks.bases import BaseDatasetSteps
+from examples.tasks.bases import BaseNodeStepsMixin
 
 
-class ICEWS18Dataset(BaseDataset, BaseDatasetSteps):
+class ICEWS18Dataset(BaseDataset, BaseNodeStepsMixin):
 
     NAME = "ICEWS18"
     BATCH_KEYS = ["h_obj", "h_obj_t", "h_sub", "h_sub_t", "obj", "rel", "sub", "t"]
