@@ -3,7 +3,7 @@ name: 'mnist_super_pixels'
 _target_: examples.datasets.${dataset.name}.MNISTSuperpixelsDataset
 params:
   defaulTasksMixin:
-    - _target_: examples.tasks.classification.NodeCategoricalClassificationStepsMixin
+    - _target_: examples.tasks.classification.GraphCategoricalClassificationStepsMixin
   num_edges: -1
   num_layers: ${model.params.num_layers}
   transform:

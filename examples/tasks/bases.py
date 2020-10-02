@@ -14,6 +14,7 @@ from torch_geometric.data import DataLoader
 from torch_geometric.datasets import Planetoid
 from torch_geometric.data import NeighborSampler
 import torch_geometric.transforms as T
+from torch_geometric.nn import global_mean_pool, global_max_pool
 from sklearn.cluster import KMeans
 from sklearn.metrics.cluster import (
     v_measure_score,
@@ -70,6 +71,10 @@ class BaseStepsMixin:
         if logits is not None:
             if sampling == SAMPLING.DataLoader.value:
                 logits = logits[batch[f"{stage}_mask"]]
+
+        if logits.shape[1] != targets.shape[0]:
+            if batch.batch is not None:
+                logits = global_max_pool(logits.squeeze(), batch.batch)
         loss, preds = self.compute_loss(logits, targets, internal_losses)
         return loss, preds, targets
 

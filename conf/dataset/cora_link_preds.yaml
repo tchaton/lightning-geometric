@@ -1,0 +1,32 @@
+# @package _group_
+name: 'cora'
+_target_: examples.datasets.${dataset.name}.CoraDataset
+params:
+  use_gdc: False
+  defaulTasksMixin:
+    - _target_: examples.tasks.classification.NodeCategoricalClassificationStepsMixin
+  num_edges: -1
+  num_layers: ${model.params.num_layers}
+  transform:
+    - _target_: torch_geometric.transforms.NormalizeFeatures
+    - activate: ${dataset.params.use_gdc}
+      _target_: torch_geometric.transforms.GDC
+      params:
+        self_loop_weight: 1
+        normalization_in: 'sym'
+        normalization_out: 'col'
+        diffusion_kwargs:
+          method: 'ppr'
+          alpha: 0.05
+        sparsification_kwargs:
+          method: 'topk'
+          k: 128
+          dim: 0
+        exact: True
+  samplers:
+    - stage: 'train'
+      sampling: 'link_pred'
+    - stage: 'val'
+      sampling: 'link_pred'
+    - stage: 'test'
+      sampling: 'link_pred'

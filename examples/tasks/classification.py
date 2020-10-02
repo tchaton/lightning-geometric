@@ -31,10 +31,18 @@ class BaseNodeClassificationStepsMixin(BaseNodeStepsMixinMixin):
         result.log(f"{stage}_acc", acc, prog_bar=True)
         return result
 
+class GraphCategoricalClassificationStepsMixin(BaseNodeClassificationStepsMixin):
+    def compute_loss(self, logits, targets, internal_losses):
+        preds = F.log_softmax(logits, dim=-1)
+        loss = F.nll_loss(preds, targets) + internal_losses
+        return loss, preds
+
+    def compute_acc(self, preds, targets):
+        return self._acc_meter(preds, targets)
 
 class NodeCategoricalClassificationStepsMixin(BaseNodeClassificationStepsMixin):
     def compute_loss(self, logits, targets, internal_losses):
-        preds = F.log_softmax(logits, -1)
+        preds = F.log_softmax(logits, dim=-1)
         loss = F.nll_loss(preds, targets) + internal_losses
         return loss, preds
 
