@@ -237,7 +237,6 @@ pip-selfcheck.json
 venvs/*
 venvs
 .venv
-data
 *.ipynb
 test
 dockers
@@ -246,3 +245,4 @@ outputs
 input.json
 model.tar.gz
 data
+checkpoints

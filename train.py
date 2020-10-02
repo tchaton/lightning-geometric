@@ -22,9 +22,7 @@ import logging
 
 log = logging.getLogger(__name__)
 
-
-@hydra.main(config_path="conf", config_name="config")
-def my_app(cfg: DictConfig) -> None:
+def train(cfg):
     log.info(OmegaConf.to_yaml(cfg))
 
     data_module: pl.LightningDataModule = instantiate_data_module(cfg)
@@ -36,8 +34,6 @@ def my_app(cfg: DictConfig) -> None:
 
     gpus = list(range(torch.cuda.device_count())) if torch.cuda.is_available() else None
 
-    resume_from_checkpoint = None
-
     trainer: pl.Trainer = instantiate(cfg.trainer, gpus=gpus, logger=loggers)
 
     trainer.fit(model, data_module)
@@ -48,6 +44,11 @@ def my_app(cfg: DictConfig) -> None:
 
     if cfg.jit:
         check_jittable(model, data_module)
+
+
+@hydra.main(config_path="conf", config_name="config")
+def my_app(cfg: DictConfig) -> None:
+    train(cfg)
 
 
 if __name__ == "__main__":

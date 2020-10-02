@@ -20,5 +20,7 @@ class BaseTasksMixin:
         ), "The Tasks Mixin are overlapping. Should not be happening !"
 
         targets_mixin = [get_class(c._target_) for c in defaulTasksMixin]
+        if len(self.__class__.__bases__) > 1:
+            self.__class__.__bases__ = (self.__class__.__bases__[0],)
         for t_cls in targets_mixin:
             self.__class__.__bases__ += (t_cls,)

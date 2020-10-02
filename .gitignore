@@ -34,3 +34,4 @@ lightning_logs
 .python-version
 .venv/*
 wandb
+checkpoints
