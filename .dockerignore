@@ -246,3 +246,4 @@ input.json
 model.tar.gz
 data
 checkpoints
+.pytest_cache

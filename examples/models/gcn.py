@@ -16,12 +16,14 @@ class GCNConvNet(BaseModel):
 
         self.convs = nn.ModuleList()
 
+        normalize = not kwargs.get("use_gdc", True)
+
         self.convs.append(
             GCNConv(
                 kwargs["num_features"],
                 kwargs["hidden_channels"],
                 cached=kwargs["cached"],
-                normalize=not kwargs["use_gdc"],
+                normalize=normalize,
             )
         )
 
@@ -31,7 +33,7 @@ class GCNConvNet(BaseModel):
                     kwargs["hidden_channels"],
                     kwargs["hidden_channels"],
                     cached=kwargs["cached"],
-                    normalize=not kwargs["use_gdc"],
+                    normalize=normalize,
                 )
             )
 
@@ -40,7 +42,7 @@ class GCNConvNet(BaseModel):
                 kwargs["hidden_channels"],
                 kwargs["num_classes"],
                 cached=kwargs["cached"],
-                normalize=not kwargs["use_gdc"],
+                normalize=normalize,
             )
         )
 

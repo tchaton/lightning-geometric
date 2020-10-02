@@ -34,4 +34,29 @@ def test_cora_inference(model, dataset, jit):
     with initialize(config_path="../conf", job_name="test_app"):
         print({"model":model, "dataset":dataset, "jit":jit})
         cfg = compose(config_name="config", overrides=cmd_line.format(model, dataset, jit).split(' '))
+        # override params
+        cfg.dataset.params.use_gdc = False
+        train(cfg)
+
+
+@pytest.mark.parametrize("model", ["gcn", "gcn2"])
+@pytest.mark.parametrize("dataset", ["cora"])
+@pytest.mark.parametrize("jit", ["True", "False"])
+def test_cora_inference(model, dataset, jit):
+    cmd_line = "model={} dataset={} loggers=thomas-chaton log=False notes='' name='test' explain=False jit={}"
+    with initialize(config_path="../conf", job_name="test_app"):
+        print({"model":model, "dataset":dataset, "jit":jit})
+        cfg = compose(config_name="config", overrides=cmd_line.format(model, dataset, jit).split(' '))
+        # override params
+        cfg.dataset.params.use_gdc = True
+        train(cfg)
+
+@pytest.mark.parametrize("model", ["sage", "dna", "dna", "sgc", "tag"])
+@pytest.mark.parametrize("dataset", ["ppi"])
+@pytest.mark.parametrize("jit", ["True", "False"])
+def test_ppi_inference(model, dataset, jit):
+    cmd_line = "model={} dataset={} loggers=thomas-chaton log=False notes='' name='test' explain=False jit={}"
+    with initialize(config_path="../conf", job_name="test_app"):
+        print({"model":model, "dataset":dataset, "jit":jit})
+        cfg = compose(config_name="config", overrides=cmd_line.format(model, dataset, jit).split(' '))
         train(cfg)

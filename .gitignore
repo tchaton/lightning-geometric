@@ -35,3 +35,4 @@ lightning_logs
 .venv/*
 wandb
 checkpoints
+.pytest_cache

@@ -45,7 +45,7 @@ jobs:
       - name: Test with unittest
         run: |
           source ${pythonEnv}/bin/activate
-          pip install coverage
+          pip install coverage pytest
           coverage run -m pytest
           coverage xml
         env:
