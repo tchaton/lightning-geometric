@@ -42,3 +42,18 @@ python train.py model={{MODEL}} dataset={{DATASET}} loggers={{LOGGERS}} log={{LO
 | cora          | arma        | ""                                                                                                                                                                                        | The ARMA graph convolutional operator from the "Graph Neural Networks with Convolutional ARMA Filters" <https://arxiv.org/abs/1901>.01343>                                                 | True                         |
 | cora          | gcn         | ""                                                                                                                                                                                        | The GCN graph convolutional operator from the "Semi Supervised Classification with Graph Convolution Networks" <https://arxiv.org/pdf/1609.02907.pdf>.01343>                               | True                         |
 | cora          | gcn2        | ""                                                                                                                                                                                        | The graph convolutional operator with initial residual connections and identity mapping (GCNII) from the "Simple and Deep Graph Convolutional Networks" <https://arxiv.org/abs/2007.02133> | True                         |
+
+# DATASET SIZES
+
+```
+529M    ./Flickr
+ 74M    ./FAUST
+ 16M    ./cora
+3.5G    ./Reddit
+383M    ./ZINC
+1.8G    ./MNISTSuperpixels
+182M    ./OgbnArxiv
+192M    ./PPI
+156M    ./ICEWS18
+6.8G    .
+```

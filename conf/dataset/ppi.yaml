@@ -5,6 +5,11 @@ params:
   defaulTasksMixin:
     - _target_: examples.tasks.classification.BinaryClassificationStepsMix
   num_layers: ${model.params.num_layers}
+  transform:
+    - activate: True
+      _target_: torch_geometric.transforms.GCNNorm
+    - activate: True
+      _target_: torch_geometric.transforms.ToSparseTensor
   samplers:
     - stage: 'train'
       sampling: 'dataloader'
