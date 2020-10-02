@@ -1,6 +1,6 @@
 import os
 import os.path as osp
-from torch_geometric.datasets import  MNISTSuperpixels
+from torch_geometric.datasets import MNISTSuperpixels
 from examples.core.base_dataset import BaseDataset
 from examples.core.transforms import AddFeatsByKeys
 
