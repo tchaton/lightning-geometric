@@ -30,9 +30,13 @@ class InfoMaxModel(BaseModel):
 
         self.model = DeepGraphInfomax(
             hidden_channels=kwargs["hidden_channels"],
-            encoder=Encoder(kwargs["num_features"], kwargs["hidden_channels"]),
-            summary=lambda z, *args, **kwargs: torch.sigmoid(z.mean(dim=0)),
             corruption=corruption,
+            encoder=Encoder(kwargs["num_features"], 
+                            kwargs["hidden_channels"]),
+                            summary=lambda z, 
+                            *args, 
+                            **kwargs: torch.sigmoid(z.mean(dim=0)
+                            )
         )
 
     def forward(self, batch):
