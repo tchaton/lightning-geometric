@@ -1,2 +1,2 @@
 from .bases import *
-from .classification import NodeCategoricalClassificationStepsMixin
+from .classification import CategoricalClassificationStepsMixin

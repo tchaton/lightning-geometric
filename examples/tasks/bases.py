@@ -68,11 +68,12 @@ class BaseStepsMixin:
             (logits, internal_losses), targets, sampling = self.inference_step(
                 batch, batch_nb, stage
             )
+        
         if logits is not None:
             if sampling == SAMPLING.DataLoader.value:
                 logits = logits[batch[f"{stage}_mask"]]
 
-        if logits.shape[1] != targets.shape[0]:
+        if not any(set(logits.shape).intersection(targets.shape)):
             if batch.batch is not None:
                 logits = global_max_pool(logits.squeeze(), batch.batch)
         loss, preds = self.compute_loss(logits, targets, internal_losses)
@@ -109,6 +110,9 @@ class BaseStepsMixin:
                 ),
                 self.data.y[batch[1]],
             )
+        elif sampling == SAMPLING.LinkPred.value:
+            Batch = namedtuple("Data", ["x", "pos_edge_index", "neg_edge_index", "pos_edge_attr"])
+            return Batch(*[batch.x, batch.pos_edge_index, batch.neg_edge_index, getattr(batch, "pos_edge_attr", None)]), batch.link_labels
         else:
             raise Exception("Not defined")
 
@@ -118,8 +122,6 @@ class BaseStepsMixin:
     def test_step(self, batch, batch_nb):
         return self._test_step(batch, batch_nb, stage="test")
 
-
-class BaseNodeStepsMixinMixin(BaseStepsMixin):
     def training_step(self, batch, batch_nb, sampling=None):
         loss, _, _ = self.step(batch, batch_nb, "train")
         result = pl.TrainResult(loss)

@@ -3,10 +3,12 @@ from omegaconf import DictConfig
 from enum import Enum
 from functools import partial
 import torch
+from collections import namedtuple
 from torch_geometric.utils import (train_test_split_edges, negative_sampling, remove_self_loops,
                                    add_self_loops)
 from torch_geometric.data import Batch
 from torch_geometric.data import DataLoader
+from torch.utils.data import Dataset, DataLoader as THDataloader
 from torch_geometric.data import NeighborSampler
 
 
@@ -134,22 +136,26 @@ class BaseDatasetSamplerMixin:
             link_labels[:pos_edge_index.size(1)] = 1.
             return link_labels
 
+        def prepare_data(data, stage):
+            x, pos_edge_index = data.x, getattr(data, f"{stage}_pos_edge_index")
+
+            _edge_index, _ = remove_self_loops(pos_edge_index)
+            pos_edge_index_with_self_loops, _ = add_self_loops(_edge_index,
+                                                            num_nodes=x.size(0))
+
+            neg_edge_index = negative_sampling(
+                edge_index=pos_edge_index_with_self_loops, num_nodes=x.size(0),
+                num_neg_samples=pos_edge_index.size(1))
+
+            link_labels = get_link_labels(pos_edge_index, neg_edge_index)
+            Data = namedtuple("Data", ["x", "pos_edge_index", "neg_edge_index", "link_labels"])
+            return [Data(*[x, pos_edge_index, neg_edge_index, link_labels])]
+
+
         if not hasattr(self, "_loaded_dataset"):
             self.data.train_mask = self.data.val_mask = self.data.test_mask = self.data.y = None
             self._loaded_dataset = train_test_split_edges(self.data)
 
-        data = self._loaded_dataset
-
-        x, pos_edge_index = data.x, data.train_pos_edge_index
-
-        _edge_index, _ = remove_self_loops(pos_edge_index)
-        pos_edge_index_with_self_loops, _ = add_self_loops(_edge_index,
-                                                        num_nodes=x.size(0))
-
-        neg_edge_index = negative_sampling(
-            edge_index=pos_edge_index_with_self_loops, num_nodes=x.size(0),
-            num_neg_samples=pos_edge_index.size(1))
-
-        link_labels = get_link_labels(pos_edge_index, neg_edge_index)
-        breakpoint()
+        data = prepare_data(self._loaded_dataset, stage)
+        return THDataloader(data)
 

@@ -1,0 +1,9 @@
+# @package _group_
+name: 'gcn_link_pred'
+_target_: examples.models.${model.name}.GCNConvLinkPredNet
+params:
+  hidden_channels: 32
+  embedding_dim: 64
+  num_layers: 3
+  use_gdc: ${dataset.params.use_gdc}
+  cached: False

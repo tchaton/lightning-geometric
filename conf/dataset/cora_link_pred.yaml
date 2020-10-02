@@ -4,9 +4,10 @@ _target_: examples.datasets.${dataset.name}.CoraDataset
 params:
   use_gdc: False
   defaulTasksMixin:
-    - _target_: examples.tasks.classification.NodeCategoricalClassificationStepsMixin
+    - _target_: examples.tasks.classification.BinaryClassificationStepsMix
   num_edges: -1
   num_layers: ${model.params.num_layers}
+  threshold: 0.5
   transform:
     - _target_: torch_geometric.transforms.NormalizeFeatures
     - activate: ${dataset.params.use_gdc}

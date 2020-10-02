@@ -31,6 +31,8 @@ class BaseDataset(BaseDatasetSamplerMixin, BaseTasksMixin, LightningDataModule):
         *args,
         **kwargs,
     ):
+
+        self._threshold = kwargs.get("threshold", None)
         self.__instantiate_transform(kwargs)
         BaseDatasetSamplerMixin.__init__(self, *args, **kwargs)
         BaseTasksMixin.__init__(self, *args, **kwargs)
