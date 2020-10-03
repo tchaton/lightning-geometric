@@ -25,7 +25,7 @@ def pytest_sessionfinish(session, exitstatus):
     Called after whole test run finished, right before
     returning the exit status to the system.
     """
-    if "runner" in current_cwd:
+    if "runner" in current_cwd and False:
         for r, d, f in os.walk(current_cwd):
             for file in f:
                 if len([n for n in ["/.git", "__pycache__", "checkpoints", "packages"] if n in file]) == 0:

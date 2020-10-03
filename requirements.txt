@@ -1,8 +1,9 @@
 absl-py==0.10.0
-aiohttp==3.6.2; python_version >= "3.6"
+aiohttp==3.6.2
 antlr4-python3-runtime==4.8
+apipkg==1.5
 ase==3.20.1
-async-timeout==3.0.1; python_version >= "3.6"
+async-timeout==3.0.1
 atomicwrites==1.4.0; sys_platform == "win32"
 attrs==20.2.0
 cachetools==4.1.1
@@ -14,6 +15,7 @@ configparser==5.0.0
 cycler==0.10.0
 decorator==4.4.2
 docker-pycreds==0.4.0
+execnet==1.7.1
 fsspec==0.8.3
 future==0.18.2
 gitdb==4.0.5
@@ -25,8 +27,8 @@ grpcio==1.32.0
 h5py==2.10.0
 hydra-core==1.0.0
 idna==2.10
-importlib-metadata==2.0.0; python_version < "3.8"
-importlib-resources==3.0.0; python_version < "3.9"
+importlib-metadata==2.0.0
+importlib-resources==3.0.0
 iniconfig==1.0.1
 isodate==0.6.0
 jinja2==2.11.2
@@ -37,7 +39,7 @@ llvmlite==0.34.0rc1
 markdown==3.2.2
 markupsafe==1.1.1
 matplotlib==3.3.2
-multidict==4.7.6; python_version >= "3.6"
+multidict==4.7.6
 networkx==2.5
 numba==0.50.1
 numpy==1.19.2
@@ -59,6 +61,8 @@ pyasn1==0.4.8
 pyasn1-modules==0.2.8
 pyparsing==2.4.7
 pytest==6.1.0
+pytest-forked==1.3.0
+pytest-xdist==2.1.0
 python-dateutil==2.8.1
 python-louvain==0.14
 -e git+https://github.com/PyTorchLightning/pytorch-lightning.git@a677833f844f2f00823aa24e86d78266eeb1787f#egg=pytorch-lightning
@@ -67,7 +71,7 @@ pyyaml==5.3.1
 rdflib==5.0.0
 requests==2.24.0
 requests-oauthlib==1.3.0
-rsa==4.6; python_version >= "3.5"
+rsa==4.6
 scikit-learn==0.23.2
 scipy==1.5.2
 sentry-sdk==0.18.0
@@ -91,6 +95,7 @@ urllib3==1.25.10
 wandb==0.10.4
 watchdog==0.10.3
 werkzeug==1.0.1
-wheel==0.35.1; python_version >= "3"
-yarl==1.6.0; python_version >= "3.6"
-zipp==3.2.0; python_version < "3.8"
+wheel==0.35.1
+yarl==1.6.0
+zipp==3.2.0
+
