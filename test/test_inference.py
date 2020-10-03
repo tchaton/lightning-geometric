@@ -45,7 +45,7 @@ workflow_runs = {"test_argva_cora_inference": True, # Works
         "test_flickr_inference": True,
         "test_zinc_inference": True } # Works
 
-if "/home/runner/.cache" in current_cwd:
+if "runner" in current_cwd:
     runs = workflow_runs
 else:
     runs = local_runs 
