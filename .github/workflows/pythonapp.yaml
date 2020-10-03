@@ -38,9 +38,7 @@ jobs:
           python -m venv ${pythonEnv}
           source ${pythonEnv}/bin/activate
           python -m pip install torch==1.6.0+cpu torchvision==0.7.0+cpu -f https://download.pytorch.org/whl/torch_stable.html
-          poetry export -f requirements.txt -o requirements.txt --without-hashes
-          sh scripts/clean_requirements.sh
-          python -m pip install -r requirements.txt
+          python -m poetry install
         env:
           pythonEnv: /home/runner/.cache/${{ matrix.python-version }}
 
