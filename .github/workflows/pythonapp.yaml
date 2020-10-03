@@ -46,7 +46,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: data
-          key: lightning-geometric-datasets
+          key: lightning-geometric-datasets-v0
 
       - name: Test with unittest
         run: |

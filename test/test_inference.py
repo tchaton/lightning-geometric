@@ -30,25 +30,26 @@ def run(*outer_args, **outer_kwargs):
 
 local_runs = {"test_argva_cora_inference": False,
         "test_cora_inference": False,
-        "test_cora_inference": False,
         "test_cora_gcn_inference": False,
         "test_ppi_inference": False,
         "test_flickr_inference": False,
-        "test_cora_link_pred_inference": False,
-        "test_zinc_inference": True }
+        "test_cora_link_pred_inference": True,
+        "test_zinc_inference": False }
 
 workflow_runs = {"test_argva_cora_inference": True, # Works
         "test_cora_inference": True, # Works
-        "test_cora_inference": True, # Works
         "test_cora_gcn_inference": False, # Doesn't Work
         "test_ppi_inference": True, # Works
-        "test_flickr_inference": True,
+        "test_flickr_inference": True, # Works
+        "test_cora_link_pred_inference": True,
         "test_zinc_inference": True } # Works
 
 if "runner" in current_cwd:
     runs = workflow_runs
 else:
     runs = local_runs 
+
+################ CORA TESTS ################
 
 @pytest.mark.parametrize("model", ["argva"])
 @pytest.mark.parametrize("dataset", ["cora"])
@@ -88,6 +89,19 @@ def test_cora_gcn_inference(model, dataset, jit):
         cfg.dataset.params.use_gdc = True
         train(cfg)
 
+@pytest.mark.parametrize("model", ["gcn_link_pred"])
+@pytest.mark.parametrize("dataset", ["cora_link_pred"])
+@pytest.mark.parametrize("jit", ["True", "False"])
+@run()
+def test_cora_link_pred_inference(model, dataset, jit):
+    cmd_line = "model={} dataset={} loggers=thomas-chaton log=False notes='' name='test' explain=False jit={}"
+    with initialize(config_path="../conf", job_name="test_app"):
+        print({"model":model, "dataset":dataset, "jit":jit})
+        cfg = compose(config_name="config", overrides=cmd_line.format(model, dataset, jit).split(' '))
+        train(cfg)
+
+################ PPI TESTS ################
+
 @pytest.mark.parametrize("model", ["sage", "dna", "dna", "sgc", "tag"])
 @pytest.mark.parametrize("dataset", ["ppi"])
 @pytest.mark.parametrize("jit", ["True", "False"])
@@ -98,6 +112,8 @@ def test_ppi_inference(model, dataset, jit):
         print({"model":model, "dataset":dataset, "jit":jit})
         cfg = compose(config_name="config", overrides=cmd_line.format(model, dataset, jit).split(' '))
         train(cfg)
+
+################ Flickr TESTS ################
 
 @pytest.mark.parametrize("model", ["sage", "dna", "dna", "sgc", "tag"])
 @pytest.mark.parametrize("dataset", ["flickr"])
@@ -110,16 +126,7 @@ def test_flickr_inference(model, dataset, jit):
         cfg = compose(config_name="config", overrides=cmd_line.format(model, dataset, jit).split(' '))
         train(cfg)
 
-@pytest.mark.parametrize("model", ["gcn_link_pred"])
-@pytest.mark.parametrize("dataset", ["cora_link_pred"])
-@pytest.mark.parametrize("jit", ["True", "False"])
-@run()
-def test_cora_link_pred_inference(model, dataset, jit):
-    cmd_line = "model={} dataset={} loggers=thomas-chaton log=False notes='' name='test' explain=False jit={}"
-    with initialize(config_path="../conf", job_name="test_app"):
-        print({"model":model, "dataset":dataset, "jit":jit})
-        cfg = compose(config_name="config", overrides=cmd_line.format(model, dataset, jit).split(' '))
-        train(cfg)
+################ Zinc TESTS ################
 
 @pytest.mark.parametrize("model", ["pna"])
 @pytest.mark.parametrize("dataset", ["zinc"])

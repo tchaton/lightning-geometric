@@ -5,4 +5,4 @@ staticchecks:
 	mypy examples
 
 local-test:
-	coverage run -m pytest --verbose --capture=no
+	coverage run -m pytest --verbose --capture=no --color=yes
