@@ -25,6 +25,10 @@ python train.py model={{MODEL}} dataset={{DATASET}} loggers={{LOGGERS}} log={{LO
 - `NAME` str: Training name appearing on Wandb.
 - `LOG` bool: Wheter to make model jittable.
 
+### Working Inference
+
+Have a look at `test/test_inference.py`
+
 ### SUPPORTED COMBINAISONS
 
 | `{{DATASET}}` | `{{MODEL}}` | DATASET DESCRIPTION                                                                                                                                                                       | MODEL DESCRIPTION                                                                                                                                                                          | WORKING                      |     |
