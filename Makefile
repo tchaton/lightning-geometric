@@ -5,4 +5,7 @@ staticchecks:
 	mypy examples
 
 local-test:
-	coverage run -m pytest --verbose --capture=no --color=yes
+	coverage run -m pytest -n `sysctl -n hw.ncpu` --verbose --capture=no --color=yes
+
+workflow-test:
+	coverage run -m pytest -n `sysctl -n hw.ncpu` --color=yes
