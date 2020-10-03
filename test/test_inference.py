@@ -63,7 +63,7 @@ def test_argva_cora_inference(model, dataset, jit):
         cfg = compose(config_name="config", overrides=cmd_line.format(model, dataset, jit).split(' '))
         train(cfg)
 
-@pytest.mark.parametrize("model", ["sage", "dna", "dna", "gcn", "sgc", "tag"])
+@pytest.mark.parametrize("model", ["sage", "dna", "dna", "sgc", "tag"])
 @pytest.mark.parametrize("dataset", ["cora"])
 @pytest.mark.parametrize("jit", ["True", "False"])
 @run()
