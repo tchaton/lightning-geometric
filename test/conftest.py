@@ -25,9 +25,11 @@ def pytest_sessionfinish(session, exitstatus):
     Called after whole test run finished, right before
     returning the exit status to the system.
     """
-    for r, d, f in os.walk(current_cwd):
-        for file in f:
-            print(os.path.join(r, file))
+    if "/home/runner/.cache" in current_cwd:
+        for r, d, f in os.walk(current_cwd):
+            for file in f:
+                if len([n for n in ["outputs", "packages"] if n in file]) == 0:
+                    print(os.path.join(r, file))
 
 def pytest_unconfigure(config):
     """

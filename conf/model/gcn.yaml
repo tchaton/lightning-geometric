@@ -4,5 +4,5 @@ _target_: examples.models.${model.name}.GCNConvNet
 params:
   hidden_channels: 32
   num_layers: 3
-  use_gdc: ${dataset.params.use_gdc}
+  use_gdc: ${dataset.params.use_gdc, False}
   cached: False

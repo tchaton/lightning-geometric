@@ -24,7 +24,7 @@ jobs:
         run: sudo apt-get install libopenblas-dev
 
       - name: Cache python dependencies
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         id: cache
         with:
           path: /home/runner/.cache/${{ matrix.python-version }}
@@ -42,7 +42,7 @@ jobs:
         env:
           pythonEnv: /home/runner/.cache/${{ matrix.python-version }}
 
-      - name: Cache tested datasets
+      - name: Cache datasets
         uses: actions/cache@v2
         with:
           path: data

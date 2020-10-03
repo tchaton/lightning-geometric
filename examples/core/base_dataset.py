@@ -77,9 +77,10 @@ class BaseDataset(BaseDatasetSamplerMixin, BaseTasksMixin, LightningDataModule):
             if "transform" in k and kwargs.get(k) is not None:
                 transforms = []
                 for t in kwargs.get(k):
-                    if hasattr(t, "activate"):
+                    if t.get("activate") is not None:
                         if t.activate is False:
                             continue
+                        del t["activate"]
                     transforms.append(instantiate(t))
                 transform = T.Compose(transforms)
                 setattr(self, f"_{k}", transform)

@@ -6,9 +6,9 @@ params:
     - _target_: examples.tasks.classification.BinaryClassificationStepsMix
   num_layers: ${model.params.num_layers}
   transform:
-    - activate: True
+    - activate: False
       _target_: torch_geometric.transforms.GCNNorm
-    - activate: True
+    - activate: False
       _target_: torch_geometric.transforms.ToSparseTensor
   samplers:
     - stage: 'train'
