@@ -15,6 +15,12 @@ DIR_PATH = os.path.dirname(os.path.dirname(__file__))
 def getcwd():
     return os.path.join(DIR_PATH, "outputs")
 
+current_cwd = os.getcwd()
+
+for r, d, f in os.walk(current_cwd):
+    for file in f:
+        print(os.path.join(r, file))
+
 os.getcwd = getcwd
 
 def run(*outer_args, **outer_kwargs):
@@ -27,11 +33,22 @@ def run(*outer_args, **outer_kwargs):
         return func_wrapper
     return runner_func
 
-runs = {"test_argva_cora_inference": True,
+local_runs = {"test_argva_cora_inference": True,
         "test_cora_inference": True,
         "test_cora_inference": True,
-        "test_cora_gcn_inference": True,
+        "test_cora_gcn_inference": False,
         "test_ppi_inference": False }
+
+workflow_runs = {"test_argva_cora_inference": True,
+        "test_cora_inference": True,
+        "test_cora_inference": True,
+        "test_cora_gcn_inference": False,
+        "test_ppi_inference": False }
+
+if "/home/runner/.cache" in current_cwd:
+    runs = workflow_runs
+else:
+    runs = local_runs 
 
 @pytest.mark.parametrize("model", ["argva"])
 @pytest.mark.parametrize("dataset", ["cora"])
