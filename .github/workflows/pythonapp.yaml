@@ -46,7 +46,7 @@ jobs:
         run: |
           source ${pythonEnv}/bin/activate
           pip install coverage pytest
-          coverage run -m pytest
+          make local-test
           coverage xml
         env:
           pythonEnv: /home/runner/.cache/${{ matrix.python-version }}

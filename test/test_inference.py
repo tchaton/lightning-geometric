@@ -27,10 +27,10 @@ def run(*outer_args, **outer_kwargs):
         return func_wrapper
     return runner_func
 
-runs = {"test_argva_cora_inference": False,
-        "test_cora_inference": False,
-        "test_cora_inference": False,
-        "test_cora_gcn_inference": False,
+runs = {"test_argva_cora_inference": True,
+        "test_cora_inference": True,
+        "test_cora_inference": True,
+        "test_cora_gcn_inference": True,
         "test_ppi_inference": False }
 
 @pytest.mark.parametrize("model", ["argva"])
