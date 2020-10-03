@@ -1,6 +1,9 @@
 # content of conftest.py
+import os
 
 pytest_plugins = []
+
+current_cwd = os.getcwd()
 
 def pytest_configure(config):
     """
@@ -22,7 +25,9 @@ def pytest_sessionfinish(session, exitstatus):
     Called after whole test run finished, right before
     returning the exit status to the system.
     """
-
+    for r, d, f in os.walk(current_cwd):
+        for file in f:
+            print(os.path.join(r, file))
 
 def pytest_unconfigure(config):
     """

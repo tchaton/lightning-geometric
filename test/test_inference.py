@@ -16,11 +16,6 @@ def getcwd():
     return os.path.join(DIR_PATH, "outputs")
 
 current_cwd = os.getcwd()
-
-for r, d, f in os.walk(current_cwd):
-    for file in f:
-        print(os.path.join(r, file))
-
 os.getcwd = getcwd
 
 def run(*outer_args, **outer_kwargs):
