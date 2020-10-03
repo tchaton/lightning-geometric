@@ -36,3 +36,5 @@ lightning_logs
 wandb
 checkpoints
 .pytest_cache
+pytestdebug.log
+*log

@@ -247,3 +247,4 @@ model.tar.gz
 data
 checkpoints
 .pytest_cache
+pytestdebug.log
