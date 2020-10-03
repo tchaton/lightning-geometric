@@ -5,7 +5,7 @@ staticchecks:
 	mypy examples
 
 local-test:
-	coverage run -m pytest -n `sysctl -n hw.ncpu` --verbose --capture=no --color=yes
+	coverage run -m pytest -n `python -c 'import multiprocessing as mp; print(mp.cpu_count())'` --verbose --capture=no --color=yes
 
 workflow-test:
-	coverage run -m pytest -n `sysctl -n hw.ncpu` --color=yes
+	coverage run -m pytest -n `python -c 'import multiprocessing as mp; print(mp.cpu_count())'` --color=yes
