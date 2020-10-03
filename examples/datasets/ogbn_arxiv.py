@@ -69,9 +69,6 @@ class OgbnArxivDataset(BaseDataset):
         )
 
     def val_dataloader(self, batch_size=32, transforms=None):
-        import pdb
-
-        pdb.set_trace()
         return NeighborSampler(
             self.data.adj_t[self.split_idx["valid"]],
             node_idx=self.split_idx["valid"],
