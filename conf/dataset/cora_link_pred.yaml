@@ -4,7 +4,7 @@ _target_: examples.datasets.${dataset.name}.CoraDataset
 params:
   use_gdc: False
   defaulTasksMixin:
-    - _target_: examples.tasks.classification.BinaryClassificationStepsMix
+    - _target_: examples.tasks.classification.BinaryClassificationStepsMixin
   num_edges: -1
   num_layers: ${model.params.num_layers}
   threshold: 0.5

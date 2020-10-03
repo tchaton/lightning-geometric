@@ -31,7 +31,7 @@ class BaseClassificationStepsMixin(BaseStepsMixin):
         result.log(f"{stage}_acc", acc, prog_bar=True)
         return result
 
-class BinaryClassificationStepsMix(BaseClassificationStepsMixin):
+class BinaryClassificationStepsMixin(BaseClassificationStepsMixin):
 
     loss_op = torch.nn.BCEWithLogitsLoss()
     num_classes = 2

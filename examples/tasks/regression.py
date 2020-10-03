@@ -15,18 +15,29 @@ from torch_geometric.data import NeighborSampler
 import torch_geometric.transforms as T
 from examples.core.base_dataset_samplers import SAMPLING
 from examples.core.typing import SparseBatch, TensorBatch
-from examples.tasks.bases import BaseNodeStepsMixin
+from examples.tasks.bases import BaseStepsMixin
 
-
-class NodeRegressionStepsMixin(BaseNodeStepsMixin):
+class BaseRegressionStepsMixin(BaseStepsMixin):
     def __init__(self, *args, **kwargs):
-        super(NodeRegressionStepsMixin, self).__init__(*args, **kwargs)
+        super(BaseRegressionStepsMixin, self).__init__()
 
     def compute_loss(self, inputs, targets, internal_losses):
-        loss = (inputs.squeeze() - targets).abs().mean() + internal_losses
+        loss = self.loss(inputs.squeeze(), targets.squeeze()) + internal_losses
         return loss, inputs
 
     def compute_result(self, loss, preds, targets, stage):
         result = pl.EvalResult(checkpoint_on=loss)
         result.log(f"{stage}_loss", loss, prog_bar=True)
         return result
+
+class L1RegressionStepsMixin(BaseRegressionStepsMixin):
+    def __init__(self, *args, **kwargs):
+        super(L1RegressionStepsMixin, self).__init__(*args, **kwargs)
+
+        self.loss = torch.nn.L1Loss()
+
+class L2RegressionStepsMixin(BaseRegressionStepsMixin):
+    def __init__(self, *args, **kwargs):
+        super(L2RegressionStepsMixin, self).__init__(*args, **kwargs)
+
+        self.loss = torch.nn.MSELoss()

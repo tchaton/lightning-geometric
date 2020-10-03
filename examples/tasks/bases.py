@@ -43,7 +43,8 @@ class BaseStepsMixin:
                 sampling = sampler.sampling
         typed_batch, targets = self.prepare_batch(batch, batch_nb, stage, sampling)
         if typed_batch.x.is_leaf:
-            typed_batch.x.requires_grad = True
+            if isinstance(typed_batch.x, torch.FloatTensor):
+                typed_batch.x.requires_grad = True
         if generative_mode is not None:
             outputs = self.forward(
                 stage == "train",
