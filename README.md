@@ -1,6 +1,6 @@
 # TorchScripted Pytorch Geometric Examples with Pytorch Lightning and Hydra
 
-[![codecov](https://codecov.io/gh/tchaton/lightning-geometric/branch/master/graph/badge.svg)](https://codecov.io/gh/tchaton/lightning-geometric) [![Actions Status](https://github.com/tchaton/lightning-geometric/workflows/unittest/badge.svg)](https://github.com/tchaton/lightning-geometric/actions) [![Documentation Status](https://readthedocs.org/projects/torch-points3d/badge/?version=latest)](https://torch-points3d.readthedocs.io/en/latest/?badge=latest)
+[![codecov](https://codecov.io/gh/tchaton/lightning-geometric/branch/master/graph/badge.svg)](https://codecov.io/gh/tchaton/lightning-geometric) [![Actions Status](https://github.com/tchaton/lightning-geometric/workflows/unittest/badge.svg)](https://github.com/tchaton/lightning-geometric/actions)
 
 ### Setup on MacOs. Please, adapt to others OS :)
 
