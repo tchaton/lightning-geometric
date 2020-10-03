@@ -42,6 +42,12 @@ jobs:
         env:
           pythonEnv: /home/runner/.cache/${{ matrix.python-version }}
 
+      - name: Cache tested datasets
+        uses: actions/cache@v2
+        with:
+          path: data
+          key: lightning-geometric-datasets
+
       - name: Test with unittest
         run: |
           source ${pythonEnv}/bin/activate
