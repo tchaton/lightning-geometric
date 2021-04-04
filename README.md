@@ -23,7 +23,7 @@ python train.py model={{MODEL}} dataset={{DATASET}} loggers={{LOGGERS}} log={{LO
 - `LOG` bool: Wheter to log training to wandb
 - `NOTES` str: A note associated to the training
 - `NAME` str: Training name appearing on Wandb.
-- `LOG` bool: Wheter to make model jittable.
+- `JIT` bool: Wheter to make model jittable.
 
 ### Working Inference
 
